@@ -1,0 +1,36 @@
+{% load static %}
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'schedule/css/appbar.css' %}" type="text/css" media="all" />
+  <style>
+    .logo-wrapper {
+      width: 270px;
+      margin-left: 110px;
+    }
+    .logo {
+      width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="logo-wrapper" href="/">
+      <img class="logo" src="{% static 'schedule/images/schevchenko.jpg' %}" alt="logo">
+    </a>
+    <nav class="nav">
+      <a class="menu-link" href="/about">Про проєкт</a>
+      <a class="menu-link" href="/contacts">Контакти</a>
+    </nav>
+    <button class="burger-menu-button" onclick="toggleMenu()">☰</button>
+  </header>
+  <div class="burger-menu-container" id="burgerMenu">
+    <nav class="burger-menu-nav">
+      <a class="burger-menu-link" href="/about">Про проєкт</a>
+      <a class="burger-menu-link" href="/contacts">Контакти</a>
+    </nav>
+  </div>
+</body>
+</html>

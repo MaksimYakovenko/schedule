@@ -1,0 +1,42 @@
+<!--{% load static %}-->
+
+<!--<html>-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <link rel="stylesheet" href="{% static 'schedule/css/add_teacher.css' %}" type="text/css" media="all" />-->
+<!--  <title>Додати викладача</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--{% include 'appbar.html' %}-->
+<!--  <div class="two-columns-layout">-->
+<!--    <article>-->
+<!--      <h1 class="header">Додати викладача</h1>-->
+<!--    </article>-->
+<!--    <div class="photo-wrapper">-->
+<!--      <img class="campus-photo" src="{% static 'schedule/images/contacts.jpg' %}" alt="Фото аудиторії" />-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <br/><br/>-->
+<!--  {% include 'footer.html' %}-->
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Додати викладача</title>
+</head>
+<body>
+
+    <h1>Додати викладача</h1>
+    <br/><br/>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-secondary">Додати викладача</button>
+    </form>
+
+</body>
+</html>

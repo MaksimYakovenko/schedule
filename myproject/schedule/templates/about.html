@@ -1,0 +1,41 @@
+{% load static %}
+
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'schedule/css/about.css' %}" type="text/css" media="all" />
+  <title>Про проєкт</title>
+</head>
+<body>
+{% include 'appbar.html' %}
+  <div class="two-columns-layout">
+    <article>
+      <h1 class="header">Про проєкт</h1>
+      <p class="paragraph">Вітаємо на офіційному сайті розкладу занять КНУ ім. Тараса Шевченка!</p>
+      <p class="paragraph">
+        Цей сервіс створено для зручного доступу студентам, викладачам та працівникам університету до інформації щодо
+        розкладу навчальних занять та сесії, а також графіку роботи викладачів.
+      </p>
+      <p class="paragraph">Ми прагнемо зробити процес планування навчання простішим і ефективнішим.</p>
+      <p class="paragraph">На сайті ви можете знайти:</p>
+      <ul class="paragraph">
+        <li>розклад занять для академічної групи за тижнями;</li>
+        <li>розклад іспитів (оновлюється напередодні сесійного контролю);</li>
+        <li>графік роботи викладачів.</li>
+      </ul>
+      <p class="paragraph">
+        Сервіс надає актуальні дані із системи формування розкладу із зазначенням дати останнього оновлення.
+      </p>
+      <p class="paragraph">Проєкт є частиною цифрової екосистеми унiверситету.</p>
+      <p class="paragraph">Розробник – Конструкторське бюро інформаційних систем.</p>
+      <p class="paragraph">Дякуємо, що користуєтесь нашим сервісом!</p>
+    </article>
+    <div class="photo-wrapper">
+      <img class="campus-photo" src="{% static 'schedule/images/knu.jpg' %}" alt="Фото кампусу" />
+    </div>
+  </div>
+  <br/><br/>
+  {% include 'footer.html' %}
+</body>
+</html>

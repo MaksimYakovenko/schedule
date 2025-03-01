@@ -1,0 +1,28 @@
+footer {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #c0392b;
+    color: white;
+    padding: 20px;
+    gap: 40px;
+    font-size: 13.8px;
+    font-family: 'Arial', Arial, serif;
+    width: 100%;
+}
+.footer-logo {
+    flex-basis: 120px;
+    transform: scale(1.1);
+}
+.footer-section {
+    flex-basis: 260px;
+}
+.footer-section a {
+    color: #ffffff;
+    text-decoration: underline;
+}
+.footer-section a:hover {
+    text-decoration: underline;
+}
+.footer-section p {
+    margin: 0 0 1rem;
+}
