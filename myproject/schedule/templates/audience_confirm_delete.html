@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'schedule/css/teacher_confirm_delete.css' %}" type="text/css" media="all" />
-    <title>Видалити викладача</title>
+    <title>Видалити аудиторію</title>
 </head>
 <body>
     <div class="container">
-        <h1>Видалити викладача</h1>
-        <p>Ви впевнені, що хочете видалити викладача <strong>"{{ object }}"</strong>?</p>
+        <h1>Видалити кафедру</h1>
+        <p>Ви впевнені, що хочете видалити аудиторію <strong>"{{ object }}"</strong>?</p>
 
         <form method="post">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger">Так, видалити</button>
-            <a href="{% url 'teacher_list' %}" class="btn btn-cancel">Скасувати</a>
+            <a href="{% url 'audience_list' %}" class="btn btn-cancel">Скасувати</a>
         </form>
     </div>
 </body>

@@ -27,7 +27,7 @@
                     <td>{{ department.name }}</td>
                     <td>{{ department.faculty }}</td>
                     <td>
-                        <a href="{% url 'department_delete' department.pk %}" class="delete-link">Видалити</a>
+                        <a href="{% url 'department_delete' department.pk %}" class="delete-btn">Видалити</a>
                     </td>
                 </tr>
             {% empty %}
@@ -38,6 +38,13 @@
         </tbody>
     </table>
 
-    <a href="{% url 'add_department' %}">Додати кафедру</a>
+   <div style="text-align: center;">
+            <a href="{% url 'add_department' %}" class="add-btn">Додати кафедру</a>
+        </div>
+
+<br/><br/>
+<footer class="footer">
+        {% include 'footer.html' %}
+    </footer>
 </body>
 </html>

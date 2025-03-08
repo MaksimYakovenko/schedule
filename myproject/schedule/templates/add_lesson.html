@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Додати кафедру</title>
+    <title>Додати аудиторію</title>
 </head>
 <body>
 {% include 'appbar.html' %}
-    <h1>Додати кафедру</h1>
+    <h1>Додати предмет</h1>
     <br/><br/>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
-        <button class="btn btn-secondary">Додати кафедру</button>
+        <button class="btn btn-secondary">Додати предмет</button>
     </form>
 
 </body>

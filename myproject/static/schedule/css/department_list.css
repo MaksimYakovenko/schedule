@@ -62,3 +62,13 @@ a {
 .filter-form button:hover {
     background-color: #0056b3;
 }
+
+.footer {
+    margin-top: auto;
+    width: 100%;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
