@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Видалити кафедру</title>
+</head>
+<body>
+    <h1>Видалити кафедру</h1>
+    <p>Ви впевнені, що хочете видалити кафедру "{{object}}"?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Так, видалити</button>
+        <a href="{% url 'department_list' %}">Скасувати</a>
+    </form>
+</body>
+</html>

@@ -1,0 +1,64 @@
+{% load static %}
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'schedule/css/teacher_list.css' %}" type="text/css" media="all" />
+    <title>Список викладачів</title>
+</head>
+<body>
+    <div class="wrapper">
+        <h1>Список викладачів</h1>
+
+        <form method="GET" class="filter-form">
+            <label for="department">Оберіть кафедру:</label>
+            <select name="department" id="department">
+                <option value="">Всі кафедри</option>
+                {% for department in departments %}
+                    <option value="{{ department }}" {% if selected_department == department %}selected{% endif %}>
+                        {{ department }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit">Фільтрувати</button>
+        </form>
+
+        {% if teachers %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ПІБ</th>
+                        <th>Посада</th>
+                        <th>Науковий ступінь</th>
+                        <th>Кафедра</th>
+                        <th>Дії</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for teacher in teachers %}
+                        <tr>
+                            <td>{{ teacher.full_name }}</td>
+                            <td>{{ teacher.position }}</td>
+                            <td>{{ teacher.degree }}</td>
+                            <td>{{ teacher.department }}</td>
+                            <td>
+                                <a href="{% url 'teacher_delete' teacher.pk %}" class="delete-btn">Видалити</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p style="text-align: center;">Викладачів ще немає або не знайдено за вибраною кафедрою.</p>
+        {% endif %}
+
+        <div style="text-align: center;">
+            <a href="{% url 'add_teacher' %}" class="add-btn">Додати викладача</a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        {% include 'footer.html' %}
+    </footer>
+</body>
+</html>
