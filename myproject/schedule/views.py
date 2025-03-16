@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, DeleteView
+from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 
 from schedule.models import Department, Teacher, Classroom, Lesson
 
@@ -78,6 +78,20 @@ class TeacherListView(ListView):
 class TeacherDeleteView(DeleteView):
     model = Teacher
     template_name = 'teacher_confirm_delete.html'
+    success_url = reverse_lazy('teacher_list')
+
+
+class DepartmentUpdateView(UpdateView):
+    model = Department
+    template_name = 'edit_department.html'
+    fields = '__all__'
+    success_url = reverse_lazy('department_list')
+
+
+class TeacherUpdateView(UpdateView):
+    model = Teacher
+    template_name = 'edit_teacher.html'
+    fields = '__all__'
     success_url = reverse_lazy('teacher_list')
 
 

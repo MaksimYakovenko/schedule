@@ -43,6 +43,7 @@
                             <td>{{ teacher.department }}</td>
                             <td>
                                 <a href="{% url 'teacher_delete' teacher.pk %}" class="delete-btn">Видалити</a>
+                                <a href="{% url 'teacher_edit' teacher.pk %}" class="edit-btn">Редагувати</a>
                             </td>
                         </tr>
                     {% endfor %}

@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 from .views import AddDepartment, AddTeacher, About, Contacts, TeacherListView, \
     DepartmentListView, TeacherDeleteView, DepartmentDeleteView, AddAudience, \
-    AudienceListView, AudienceDeleteView
+    AudienceListView, AudienceDeleteView, TeacherUpdateView
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -20,4 +20,7 @@ urlpatterns = [
          name='department_delete'),
     path('audiences/<int:pk>/delete/', AudienceDeleteView.as_view(),
          name='audience_delete'),
+    path('teachers/<int:pk>/edit/', TeacherUpdateView.as_view(), name='teacher_edit'),
+    path('departments/<int:pk>/edit/', TeacherUpdateView.as_view(),
+         name='teacher_edit'),
 ]

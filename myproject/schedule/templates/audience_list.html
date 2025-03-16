@@ -27,7 +27,7 @@
                     <td>{{ audience.name }}</td>
                     <td>{{ audience.capacity }}</td>
                     <td>
-                        <a href="{% url 'audience_delete' audience.pk %}" class="delete-link">Видалити</a>
+                        <a href="{% url 'audience_delete' audience.pk %}" class="delete-btn">Видалити</a>
                     </td>
                 </tr>
             {% empty %}
@@ -38,6 +38,12 @@
         </tbody>
     </table>
 
-    <a href="{% url 'add_audience' %}">Додати аудиторію</a>
+<div style="text-align: center;">
+<a href="{% url 'add_audience' %}" class="add-btn">Додати аудиторію</a>
+</div>
+<br/><br/>
+<footer class="footer">
+        {% include 'footer.html' %}
+    </footer>
 </body>
 </html>
