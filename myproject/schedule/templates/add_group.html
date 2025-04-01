@@ -1,0 +1,18 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Додати групу</title>
+</head>
+<body>
+{% include 'appbar.html' %}
+    <h1>Додати групу</h1>
+    <br/><br/>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-secondary">Додати групу</button>
+    </form>
+
+</body>
+</html>

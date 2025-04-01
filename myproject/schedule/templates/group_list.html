@@ -4,31 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'schedule/css/department_list.css' %}" type="text/css" media="all" />
-    <title>Список кафедр</title>
+    <title>Список предметів</title>
 </head>
 <body>
 {% include 'appbar.html' %}
 <br/>
-    <h1>Список кафедр</h1>
+    <h1>Список груп</h1>
 
     <table>
         <thead>
             <tr>
                 <th>#</th>
-                <th>Назва кафедри</th>
-                <th>Факультет</th>
-                <th>Дії</th>
+                <th>Назва групи</th>
             </tr>
         </thead>
         <tbody>
-            {% for department in departments %}
+            {% for lesson in lessons %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td>{{ department.name }}</td>
-                    <td>{{ department.faculty }}</td>
+                    <td>{{ group.name }}</td>
                     <td>
-                        <a href="{% url 'department_delete' department.pk %}" class="delete-btn">Видалити</a>
-                        <a href="{% url 'department_edit' department.pk %}" class="delete-btn">Редагувати</a>
+                        <a href="{% url 'lesson_delete' lesson.pk %}" class="delete-btn">Видалити</a>
+                        <a href="{% url 'lesson_edit' lesson.pk %}" class="delete-btn">Редагувати</a>
                     </td>
                 </tr>
             {% empty %}
@@ -40,7 +37,7 @@
     </table>
 
    <div style="text-align: center;">
-            <a href="{% url 'add_department' %}" class="add-btn">Додати кафедру</a>
+            <a href="{% url 'add_group' %}" class="add-btn">Додати групу</a>
         </div>
 
 <br/><br/>

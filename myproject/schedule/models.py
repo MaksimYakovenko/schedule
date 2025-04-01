@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Semester(models.Model):
@@ -64,14 +65,50 @@ class Classroom(models.Model):
         return self.name
 
 
+class Group(models.Model):
+    name = models.CharField(max_length=50)
+
+    class Meta:
+        verbose_name = "Група"
+        verbose_name_plural = "Групи"
+        ordering = ['name']
+        db_table = 'group'
+
+    def __str__(self):
+        return self.name
+
+
+class Subject(models.Model):
+    name = models.CharField(max_length=200)
+
+    class Meta:
+        verbose_name = "Предмет"
+        verbose_name_plural = "Предмети"
+        ordering = ['name']
+        db_table = 'subject'
+
+    def __str__(self):
+        return self.name
+
+
 class Lesson(models.Model):
-    number = models.PositiveIntegerField()
+    WEEKDAYS = [
+        (1, 'Понеділок'),
+        (2, 'Вівторок'),
+        (3, 'Середа'),
+        (4, 'Четвер'),
+        (5, 'П’ятниця'),
+        (6, 'Субота'),
+        (7, 'Неділя'),
+    ]
+
+    number = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
     classroom = models.ForeignKey(Classroom, on_delete=models.PROTECT)
-    weekday = models.CharField(max_length=10)
+    weekday = models.IntegerField(choices=WEEKDAYS)
     teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT)
-    group = models.CharField(max_length=50)
-    course = models.CharField(max_length=20)
-    subject = models.CharField(max_length=200)
+    group = models.ForeignKey(Group, on_delete=models.PROTECT)
+    course = models.CharField(max_length=1, choices=[(str(i), f"{i} курс") for i in range(1, 7)])
+    subject = models.ForeignKey(Subject, on_delete=models.PROTECT)
     semester = models.ForeignKey(Semester, on_delete=models.PROTECT)
 
     class Meta:
@@ -79,7 +116,9 @@ class Lesson(models.Model):
         verbose_name_plural = "Заняття"
         ordering = ['weekday', 'number']
         db_table = 'lesson'
-        unique_together = ('classroom', 'weekday', 'number')
+        constraints = [
+            models.UniqueConstraint(fields=['classroom', 'weekday', 'number'], name='unique_lesson_time')
+        ]
 
     def __str__(self):
-        return f"{self.subject} ({self.group}) - {self.weekday} пара {self.number}"
+        return f"{self.subject} ({self.group}) - {dict(self.WEEKDAYS).get(self.weekday)} пара {self.number}"

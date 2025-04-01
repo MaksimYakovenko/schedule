@@ -28,6 +28,7 @@
                     <td>{{ audience.capacity }}</td>
                     <td>
                         <a href="{% url 'audience_delete' audience.pk %}" class="delete-btn">Видалити</a>
+                        <a href="{% url 'audience_edit' audience.pk %}" class="delete-btn">Редагувати</a>
                     </td>
                 </tr>
             {% empty %}

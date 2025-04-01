@@ -3,10 +3,26 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 
 from schedule.models import Department, Teacher, Classroom, Lesson
+from schedule.utils import generate_schedule
+from django.shortcuts import redirect
 
 
 def home(request):
-    return render(request, 'home.html')
+    teacher_count = Teacher.objects.count()
+    department_count = Department.objects.count()
+    return render(request, 'home.html', {
+        'teacher_count': teacher_count,
+        'department_count': department_count
+    })
+
+
+def schedule_view(request):
+    if request.method == "POST":
+        generate_schedule()
+        return redirect('schedule')
+
+    lessons = Lesson.objects.all()
+    return render(request, 'schedule.html', {'lessons': lessons})
 
 
 class AddDepartment(CreateView):
@@ -46,6 +62,19 @@ class AddLesson(CreateView):
     template_name = 'add_lesson.html'
     success_url = reverse_lazy('lesson_list')
     fields = '__all__'
+
+
+class LessonDeleteView(DeleteView):
+    model = Lesson
+    template_name = 'lesson_confirm_delete.html'
+    success_url = reverse_lazy('lesson_list')
+
+
+class LessonUpdateView(UpdateView):
+    model = Lesson
+    template_name = 'edit_lesson.html'
+    fields = '__all__'
+    success_url = reverse_lazy('lesson_list')
 
 
 class AddAudience(CreateView):
@@ -98,6 +127,13 @@ class TeacherUpdateView(UpdateView):
 class AudienceDeleteView(DeleteView):
     model = Classroom
     template_name = 'audience_confirm_delete.html'
+    success_url = reverse_lazy('audience_list')
+
+
+class AudienceUpdateView(UpdateView):
+    model = Classroom
+    template_name = 'edit_audience.html'
+    fields = '__all__'
     success_url = reverse_lazy('audience_list')
 
 
