@@ -1,10 +1,14 @@
 from django.urls import path
 from . import views
 from .views import (AddDepartment, AddTeacher, About, Contacts, TeacherListView, \
-    DepartmentListView, TeacherDeleteView, DepartmentDeleteView, AddAudience, \
-    AudienceListView, AudienceDeleteView, TeacherUpdateView, \
-    DepartmentUpdateView, AudienceUpdateView, AddLesson, LessonDeleteView,
-                    LessonUpdateView, schedule_view)
+                    DepartmentListView, TeacherDeleteView, DepartmentDeleteView,
+                    AddAudience, \
+                    AudienceListView, AudienceDeleteView, TeacherUpdateView, \
+                    DepartmentUpdateView, AudienceUpdateView, AddLesson,
+                    LessonDeleteView,
+                    LessonUpdateView, schedule_view, AddGroup, GroupListView,
+                    GroupDeleteView, GroupUpdateView, SubjectListView,
+                    AddSubject, SubjectDeleteView, SubjectUpdateView)
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -32,4 +36,16 @@ urlpatterns = [
     path('lessons/<int:pk>/edit/', LessonUpdateView.as_view(),
          name='lesson_edit'),
     path('schedule/', schedule_view, name='schedule'),
+    path('add_group/', AddGroup.as_view(), name='add_group'),
+    path('groups/', GroupListView.as_view(), name='group_list'),
+    path('groups/<int:pk>/delete/', GroupDeleteView.as_view(),
+         name='group_delete'),
+    path('groups/<int:pk>/edit/', GroupUpdateView.as_view(),
+         name='group_edit'),
+    path('subjects/', SubjectListView.as_view(), name='subject_list'),
+    path('add_subject/', AddSubject.as_view(), name='add_subject'),
+    path('subjects/<int:pk>/delete/', SubjectDeleteView.as_view(),
+         name='subject_delete'),
+    path('subjects/<int:pk>/edit/', SubjectUpdateView.as_view(),
+         name='subject_edit'),
 ]

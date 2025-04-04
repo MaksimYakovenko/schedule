@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 
-from schedule.models import Department, Teacher, Classroom, Lesson
+from schedule.models import (Department, Teacher, Classroom, Lesson, Group,
+                             Subject)
 from schedule.utils import generate_schedule
 from django.shortcuts import redirect
 
@@ -32,10 +33,43 @@ class AddDepartment(CreateView):
     fields = '__all__'
 
 
+class AddSubject(CreateView):
+    model = Subject
+    template_name = 'add_subject.html'
+    success_url = reverse_lazy('subject_list')
+    fields = '__all__'
+
+
+class SubjectDeleteView(DeleteView):
+    model = Subject
+    template_name = 'add_subject.html'
+    success_url = reverse_lazy('subject_list')
+    fields = '__all__'
+
+
+class SubjectUpdateView(UpdateView):
+    model = Subject
+    template_name = 'edit_subject.html'
+    fields = '__all__'
+    success_url = reverse_lazy('subject_list')
+
+
 class DepartmentListView(ListView):
     model = Department
     template_name = 'department_list.html'
     context_object_name = 'departments'
+
+
+class SubjectListView(ListView):
+    model = Subject
+    template_name = 'subject_list.html'
+    context_object_name = 'subjects'
+
+
+class GroupListView(ListView):
+    model = Group
+    template_name = 'group_list.html'
+    context_object_name = 'groups'
 
 
 class AudienceListView(ListView):
@@ -64,10 +98,30 @@ class AddLesson(CreateView):
     fields = '__all__'
 
 
+class AddGroup(CreateView):
+    model = Group
+    template_name = 'add_group.html'
+    success_url = reverse_lazy('group_list')
+    fields = '__all__'
+
+
 class LessonDeleteView(DeleteView):
     model = Lesson
     template_name = 'lesson_confirm_delete.html'
     success_url = reverse_lazy('lesson_list')
+
+
+class GroupDeleteView(DeleteView):
+    model = Group
+    template_name = 'group_confirm_delete.html'
+    success_url = reverse_lazy('group_list')
+
+
+class GroupUpdateView(UpdateView):
+    model = Group
+    template_name = 'edit_group.html'
+    fields = '__all__'
+    success_url = reverse_lazy('group_list')
 
 
 class LessonUpdateView(UpdateView):

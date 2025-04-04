@@ -1,0 +1,9 @@
+<h2>Редагування предметів</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Зберегти зміни</button>
+</form>
+
+<a href="{% url 'group_list' %}">Назад до списку</a>
