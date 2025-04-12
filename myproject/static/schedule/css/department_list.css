@@ -1,57 +1,91 @@
 h1 {
     text-align: center;
     color: #333;
+    font-size: 2rem;
+    margin-bottom: 20px;
 }
+
 table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    margin: 20px 0;
+    width: 90%;
+    margin: 0 auto 30px auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    background-color: #ffffff;
 }
+
 th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
+    padding: 15px 20px;
     text-align: center;
+    transition: background-color 0.3s ease;
 }
+
 th {
-    background-color: #007bff;
-    color: white;
+    background: linear-gradient(to right, #007bff, #0056b3);
+    color: #fff;
+    font-weight: 600;
 }
+
 tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #f2f6fc;
 }
+
+tr:hover {
+    background-color: #e9f1ff;
+}
+
 a {
     text-decoration: none;
-    padding: 5px 10px;
-    border-radius: 5px;
+    padding: 6px 12px;
+    border-radius: 6px;
     font-size: 14px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
+
+a:hover {
+    transform: scale(1.05);
+}
+
 .delete-btn {
     background-color: #dc3545;
     color: white;
+    margin-right: 5px;
 }
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
 .add-btn {
     display: inline-block;
-    margin: 20px 0;
-    padding: 10px 20px;
+    margin: 10px auto;
+    padding: 12px 25px;
     background-color: #28a745;
     color: white;
     text-decoration: none;
-    border-radius: 5px;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
+
 .add-btn:hover {
     background-color: #218838;
+    transform: translateY(-2px);
 }
+
 .filter-form {
     text-align: center;
     margin: 20px 0;
 }
+
 .filter-form select, .filter-form button {
     padding: 10px;
     font-size: 14px;
     margin: 5px;
 }
+
 .filter-form button {
     background-color: #007bff;
     color: white;
@@ -59,6 +93,7 @@ a {
     cursor: pointer;
     border-radius: 5px;
 }
+
 .filter-form button:hover {
     background-color: #0056b3;
 }
@@ -68,12 +103,12 @@ a {
     width: 100%;
 }
 
-.delete-btn {
-    background-color: #dc3545;
+.edit-btn {
+    background-color: #17a2b8;
     color: white;
 }
 
-.footer {
-    margin-top: auto;
-    width: 100%;
+.edit-btn:hover {
+    background-color: #138496;
+    transform: translateY(-1px);
 }

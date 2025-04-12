@@ -92,33 +92,60 @@ class Subject(models.Model):
 
 
 class Lesson(models.Model):
-    WEEKDAYS = [
-        (1, 'Понеділок'),
-        (2, 'Вівторок'),
-        (3, 'Середа'),
-        (4, 'Четвер'),
-        (5, 'П’ятниця'),
-        (6, 'Субота'),
-        (7, 'Неділя'),
-    ]
-
-    number = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
-    classroom = models.ForeignKey(Classroom, on_delete=models.PROTECT)
-    weekday = models.IntegerField(choices=WEEKDAYS)
     teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT)
     group = models.ForeignKey(Group, on_delete=models.PROTECT)
     course = models.CharField(max_length=1, choices=[(str(i), f"{i} курс") for i in range(1, 7)])
     subject = models.ForeignKey(Subject, on_delete=models.PROTECT)
     semester = models.ForeignKey(Semester, on_delete=models.PROTECT)
+    hours_per_week = models.PositiveIntegerField(
+        default=1,
+        validators=[MinValueValidator(1), MaxValueValidator(10)],
+        verbose_name="Кількість пар на тиждень"
+    )
 
     class Meta:
         verbose_name = "Заняття"
         verbose_name_plural = "Заняття"
-        ordering = ['weekday', 'number']
         db_table = 'lesson'
-        constraints = [
-            models.UniqueConstraint(fields=['classroom', 'weekday', 'number'], name='unique_lesson_time')
-        ]
 
     def __str__(self):
-        return f"{self.subject} ({self.group}) - {dict(self.WEEKDAYS).get(self.weekday)} пара {self.number}"
+        return f"{self.subject} ({self.group})"
+
+
+class TimeSlot(models.Model):
+    DAYS_OF_WEEK = [
+        ('Пн', 'Понеділок'),
+        ('Вт', 'Вівторок'),
+        ('Ср', 'Середа'),
+        ('Чт', 'Четвер'),
+        ('Пт', 'П’ятниця'),
+    ]
+    day = models.CharField(max_length=2, choices=DAYS_OF_WEEK)
+    lesson_number = models.PositiveIntegerField(validators=[
+        MinValueValidator(1), MaxValueValidator(4)
+    ])
+
+    class Meta:
+        verbose_name = "Часовий слот"
+        verbose_name_plural = "Часові слоти"
+        unique_together = ('day', 'lesson_number')
+        ordering = ['day', 'lesson_number']
+
+    def __str__(self):
+        return f"{self.get_day_display()} - Пара {self.lesson_number}"
+
+
+class ScheduleEntry(models.Model):
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    timeslot = models.ForeignKey(TimeSlot, on_delete=models.CASCADE)
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('lesson', 'timeslot', 'classroom')
+
+        verbose_name = "Розклад"
+        verbose_name_plural = "Розклади"
+
+    def __str__(self):
+        return f"{self.lesson.subject.name} | {self.lesson.group.name} | {self.timeslot} | {self.classroom.name}"
+

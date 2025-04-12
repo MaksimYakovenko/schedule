@@ -1,27 +1,17 @@
-import random
-from schedule.models import Lesson, Subject, Teacher, Classroom
-
+# utils.py (або файл, де визначена генерація розкладу)
+from schedule.models import ScheduleEntry, Lesson, TimeSlot, Classroom
 
 def generate_schedule():
-    teachers = list(Teacher.objects.all())
-    subjects = list(Subject.objects.all())
-    classrooms = list(Classroom.objects.all())
-    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-    times = ['09:00', '11:00', '13:00', '15:00']
+    lessons = Lesson.objects.all()
+    timeslots = Timeslot.objects.all()
+    classrooms = Classroom.objects.all()
 
-    Lesson.objects.all().delete()
-
-    for day in days:
-        for time in times:
-            if teachers and subjects and classrooms:
-                teacher = random.choice(teachers)
-                subject = random.choice(subjects)
-                classroom = random.choice(classrooms)
-
-                Lesson.objects.create(
-                    subject=subject,
-                    teacher=teacher,
-                    classroom=classroom,
-                    day=day,
-                    time=time
+    for lesson in lessons:
+        for timeslot in timeslots:
+            for classroom in classrooms:
+                # Створення нового запису для розкладу
+                ScheduleEntry.objects.create(
+                    lesson=lesson,
+                    timeslot=timeslot,
+                    classroom=classroom
                 )

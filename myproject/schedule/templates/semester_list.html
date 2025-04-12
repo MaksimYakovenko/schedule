@@ -1,0 +1,55 @@
+{% load static %}
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'schedule/css/department_list.css' %}" type="text/css" media="all" />
+    <title>Список семестрів</title>
+</head>
+<body>
+{% include 'appbar.html' %}
+<br/>
+    <h1>Список семестрів</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Рік</th>
+                <th>Номер семестру</th>
+                <th>Початок семестру</th>
+                <th>Кінець семестру</th>
+                <th>Дії</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for semester in semesters %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ semester.year }}</td>
+                    <td>{{ semester.number }}</td>
+                    <td>{{ semester.start_date }}</td>
+                    <td>{{ semester.end_date }}</td>
+                    <td>
+                        <a href="{% url 'semester_delete' semester.pk %}" class="delete-btn">Видалити</a>
+                        <a href="{% url 'semester_edit' semester.pk %}" class="delete-btn">Редагувати</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">Семестрів ще немає.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+   <div style="text-align: center;">
+            <a href="{% url 'add_semester' %}" class="add-btn">Додати семестр</a>
+        </div>
+
+<br/><br/>
+<footer class="footer">
+        {% include 'footer.html' %}
+    </footer>
+</body>
+</html>

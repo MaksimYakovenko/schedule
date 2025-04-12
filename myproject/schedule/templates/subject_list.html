@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'schedule/css/department_list.css' %}" type="text/css" media="all" />
     <title>Список предметів</title>
 </head>
@@ -16,6 +17,7 @@
             <tr>
                 <th>#</th>
                 <th>Назва предмету</th>
+                <th>Дії</th>
             </tr>
         </thead>
         <tbody>
@@ -24,8 +26,12 @@
                     <td>{{ forloop.counter }}</td>
                     <td>{{ subject.name }}</td>
                     <td>
-                        <a href="{% url 'subject_delete' subject.pk %}" class="delete-btn">Видалити</a>
-                        <a href="{% url 'subject_edit' subject.pk %}" class="delete-btn">Редагувати</a>
+                        <a href="{% url 'subject_edit' subject.pk %}" class="icon-btn edit-btn" title="Редагувати">
+    <i class="fas fa-edit"></i>
+</a>
+<a href="{% url 'subject_delete' subject.pk %}" class="icon-btn delete-btn" title="Видалити">
+    <i class="fas fa-trash-alt"></i>
+</a>
                     </td>
                 </tr>
             {% empty %}

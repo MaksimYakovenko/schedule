@@ -6,9 +6,12 @@ from .views import (AddDepartment, AddTeacher, About, Contacts, TeacherListView,
                     AudienceListView, AudienceDeleteView, TeacherUpdateView, \
                     DepartmentUpdateView, AudienceUpdateView, AddLesson,
                     LessonDeleteView,
-                    LessonUpdateView, schedule_view, AddGroup, GroupListView,
+                    LessonUpdateView, AddGroup, GroupListView,
+                    LessonUpdateView, AddGroup, GroupListView,
                     GroupDeleteView, GroupUpdateView, SubjectListView,
-                    AddSubject, SubjectDeleteView, SubjectUpdateView)
+                    AddSubject, SubjectDeleteView, SubjectUpdateView,
+                    AddSemester, SemesterListView, SemesterDeleteView,
+                    SemesterUpdateView, LessonListView, ScheduleListView )
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -27,7 +30,7 @@ urlpatterns = [
     path('audiences/<int:pk>/delete/', AudienceDeleteView.as_view(),
          name='audience_delete'),
     path('lessons/<int:pk>/delete/', LessonDeleteView.as_view(),
-         name='audience_delete'),
+         name='lesson_delete'),
     path('teachers/<int:pk>/edit/', TeacherUpdateView.as_view(), name='teacher_edit'),
     path('departments/<int:pk>/edit/', DepartmentUpdateView.as_view(),
          name='department_edit'),
@@ -35,7 +38,7 @@ urlpatterns = [
          name='audience_edit'),
     path('lessons/<int:pk>/edit/', LessonUpdateView.as_view(),
          name='lesson_edit'),
-    path('schedule/', schedule_view, name='schedule'),
+    # path('generate-schedule/', generate_schedule_view, name='generate_schedule'),
     path('add_group/', AddGroup.as_view(), name='add_group'),
     path('groups/', GroupListView.as_view(), name='group_list'),
     path('groups/<int:pk>/delete/', GroupDeleteView.as_view(),
@@ -48,4 +51,12 @@ urlpatterns = [
          name='subject_delete'),
     path('subjects/<int:pk>/edit/', SubjectUpdateView.as_view(),
          name='subject_edit'),
+    path('add_semester/', AddSemester.as_view(), name='add_semester'),
+    path('semesters/', SemesterListView.as_view(), name='semester_list'),
+    path('semesters/<int:pk>/delete/', SemesterDeleteView.as_view(),
+         name='semester_delete'),
+    path('semesters/<int:pk>/edit/', SemesterUpdateView.as_view(),
+         name='semester_edit'),
+    path('lessons/', LessonListView.as_view(), name='lesson_list'),
+    path('schedule/', ScheduleListView.as_view(), name='schedule_list'),
 ]

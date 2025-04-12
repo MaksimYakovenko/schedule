@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 
 from schedule.models import (Department, Teacher, Classroom, Lesson, Group,
-                             Subject)
+                             Subject, Semester, ScheduleEntry)
 from schedule.utils import generate_schedule
 from django.shortcuts import redirect
 
@@ -17,13 +17,32 @@ def home(request):
     })
 
 
-def schedule_view(request):
-    if request.method == "POST":
-        generate_schedule()
-        return redirect('schedule')
+def schedule_list_view(request):
+    schedule_entries = ScheduleEntry.objects.all()  # Отримуємо всі записи
 
-    lessons = Lesson.objects.all()
-    return render(request, 'schedule.html', {'lessons': lessons})
+    return render(request, 'schedule_list.html', {
+        'schedule_entries': schedule_entries  # Передаємо записи в контекст
+    })
+
+class ScheduleListView(ListView):
+    model = ScheduleEntry
+    template_name = 'schedule_list.html'
+    context_object_name = 'schedule_entries'
+
+    def get_queryset(self):
+        return ScheduleEntry.objects.select_related(
+            'lesson__group',
+            'lesson__subject',
+            'lesson__teacher',
+            'classroom',
+            'timeslot'
+        ).order_by('lesson__group__name', 'timeslot__day',
+                   'timeslot__lesson_number')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['groups'] = sorted(set(entry.lesson.group for entry in context['schedule_entries']), key=lambda g: g.name)
+        return context
 
 
 class AddDepartment(CreateView):
@@ -38,6 +57,39 @@ class AddSubject(CreateView):
     template_name = 'add_subject.html'
     success_url = reverse_lazy('subject_list')
     fields = '__all__'
+
+
+class AddSemester(CreateView):
+    model = Semester
+    template_name = 'add_semester.html'
+    success_url = reverse_lazy('semester_list')
+    fields = '__all__'
+
+
+class SemesterListView(ListView):
+    model = Semester
+    template_name = 'semester_list.html'
+    context_object_name = 'semesters'
+
+
+class LessonListView(ListView):
+    model = Lesson
+    template_name = 'lesson_list.html'
+    context_object_name = 'lessons'
+
+
+class SemesterDeleteView(DeleteView):
+    model = Semester
+    template_name = 'add_semester.html'
+    success_url = reverse_lazy('semester_list')
+    fields = '__all__'
+
+
+class SemesterUpdateView(UpdateView):
+    model = Semester
+    template_name = 'edit_semester.html'
+    fields = '__all__'
+    success_url = reverse_lazy('semester_list')
 
 
 class SubjectDeleteView(DeleteView):

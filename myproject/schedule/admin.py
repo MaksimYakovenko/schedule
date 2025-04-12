@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Semester, Department, Teacher, Classroom, Lesson
+from schedule.models import (Department, Teacher, Classroom, Lesson, Group,
+                             Subject, Semester, ScheduleEntry)
+
 
 
 @admin.register(Semester)
@@ -7,6 +9,16 @@ class SemesterAdmin(admin.ModelAdmin):
     list_display = ('year', 'number', 'start_date', 'end_date')
     list_filter = ('year', 'number')
     search_fields = ('year',)
+
+
+@admin.register(Group)
+class GroupAdmin(admin.ModelAdmin):
+    search_fields = ('name',)
+
+
+@admin.register(Subject)
+class SubjectAdmin(admin.ModelAdmin):
+    search_fields = ('name',)
 
 
 @admin.register(Department)
@@ -47,7 +59,32 @@ class ClassroomAdmin(admin.ModelAdmin):
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ('number', 'classroom', 'weekday', 'teacher', 'group', 'course', 'subject', 'semester')
-    list_filter = ('weekday', 'teacher', 'classroom', 'course', 'semester')
-    search_fields = ('group', 'subject')
-    ordering = ('weekday', 'number')
+    list_display = ('subject', 'group', 'teacher', 'course', 'semester', 'hours_per_week')
+    list_filter = ('teacher', 'group', 'course', 'semester')
+    search_fields = ('subject__name', 'group__name')
+    autocomplete_fields = ('teacher', 'group', 'subject', 'semester')
+
+
+@admin.action(description="Згенерувати розклад")
+def generate_schedule_action(modeladmin, request, queryset):
+    from .utils import generate_schedule
+    generate_schedule()
+
+
+@admin.register(ScheduleEntry)
+class ScheduleEntryAdmin(admin.ModelAdmin):
+    list_display = ('lesson', 'timeslot', 'classroom')
+    list_filter = ('timeslot', 'lesson', 'classroom')
+    search_fields = ('lesson__subject__name', 'classroom__name')
+    autocomplete_fields = ('lesson', 'classroom')
+
+    actions = ['generate_schedule_for_selected']
+
+    @admin.action(description="Згенерувати розклад для вибраних уроків")
+    def generate_schedule_for_selected(self, request, queryset):
+
+        for entry in queryset:
+            lesson = entry.lesson
+            group = lesson.group
+            classrooms = Classroom.objects.all()  # Аудиторії для розкладу
+            generate_schedule_for_group(lesson, group, classrooms)
