@@ -4,9 +4,17 @@
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="2">
+          <list size="10">
             <item index="0" class="java.lang.String" itemvalue="{result_info}" />
             <item index="1" class="java.lang.String" itemvalue="value" />
+            <item index="2" class="java.lang.String" itemvalue="selected_department" />
+            <item index="3" class="java.lang.String" itemvalue="dept" />
+            <item index="4" class="java.lang.String" itemvalue="%}selected{%" />
+            <item index="5" class="java.lang.String" itemvalue="endif" />
+            <item index="6" class="java.lang.String" itemvalue="{%" />
+            <item index="7" class="java.lang.String" itemvalue="%}" />
+            <item index="8" class="java.lang.String" itemvalue="if" />
+            <item index="9" class="java.lang.String" itemvalue="department" />
           </list>
         </value>
       </option>

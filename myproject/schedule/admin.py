@@ -1,6 +1,6 @@
 from django.contrib import admin
 from schedule.models import (Department, Teacher, Classroom, Lesson, Group,
-                             Subject, Semester, ScheduleEntry)
+                             Subject, Semester, ScheduleEntry, TimeSlot)
 
 
 
@@ -63,6 +63,14 @@ class LessonAdmin(admin.ModelAdmin):
     list_filter = ('teacher', 'group', 'course', 'semester')
     search_fields = ('subject__name', 'group__name')
     autocomplete_fields = ('teacher', 'group', 'subject', 'semester')
+
+
+@admin.register(TimeSlot)
+class TimeSlotAdmin(admin.ModelAdmin):
+    list_display = ('day', 'lesson_number')
+    list_filter = ('day',)
+    ordering = ('day', 'lesson_number')
+    search_fields = ('day',)
 
 
 @admin.action(description="Згенерувати розклад")
