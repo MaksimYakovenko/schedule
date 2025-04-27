@@ -8,6 +8,20 @@
 </head>
 <body>
     <h1>Розклад</h1>
+
+    <form method="get" action="{% url 'schedule_view' %}">
+        <label for="teacher">Виберіть викладача:</label>
+        <select name="teacher_id" id="teacher">
+            <option value="">Всі викладачі</option>
+            {% for teacher in teachers %}
+                <option value="{{ teacher.id }}" {% if teacher.id == selected_teacher_id %}selected{% endif %}>
+                    {{ teacher.full_name }}
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit">Фільтрувати</button>
+    </form>
+
     <form action="{% url 'generate_schedule' %}" method="post">
         {% csrf_token %}
         <button type="submit">Згенерувати розклад</button>

@@ -11,9 +11,11 @@ from django.shortcuts import redirect
 def home(request):
     teacher_count = Teacher.objects.count()
     department_count = Department.objects.count()
+    lessons_count = ScheduleEntry.objects.count()
     return render(request, 'home.html', {
         'teacher_count': teacher_count,
-        'department_count': department_count
+        'department_count': department_count,
+        'lessons_count': lessons_count
     })
 
 
@@ -35,8 +37,8 @@ def generate_schedule(request):
 
     for group in groups:
         for day in DAYS_OF_WEEK:
-            number_of_lessons = random.randint(1, 4)  # від 1 до 4 пар
-            lesson_numbers = random.sample(range(1, 5), number_of_lessons)  # Унікальні номери пар (без повторів)
+            number_of_lessons = random.randint(1, 4)
+            lesson_numbers = random.sample(range(1, 5), number_of_lessons)
 
             for lesson_number in lesson_numbers:
                 lesson = random.choice(lessons)
@@ -54,12 +56,26 @@ def generate_schedule(request):
 
 def schedule_view(request):
     groups = Group.objects.all()
-    schedule_entries = ScheduleEntry.objects.all().order_by('group__name', 'day_of_week', 'lesson_number')
+    teachers = Teacher.objects.all()  # Отримуємо список всіх викладачів
+
+    teacher_id = request.GET.get('teacher_id')
+
+    if teacher_id:
+        schedule_entries = ScheduleEntry.objects.filter(lesson__teacher_id=teacher_id)
+    else:
+        schedule_entries = ScheduleEntry.objects.all()
+
+    schedule_entries = sorted(
+        schedule_entries,
+        key=lambda x: (DAYS_OF_WEEK.index(x.day_of_week), x.lesson_number)
+    )
 
     context = {
         'groups': groups,
         'schedule_entries': schedule_entries,
         'lesson_times': LESSON_TIMES,
+        'teachers': teachers,  # Передаємо список викладачів в шаблон
+        'selected_teacher_id': teacher_id,  # Передаємо вибраного викладача в шаблон
     }
     return render(request, 'schedule.html', context)
 
