@@ -27,7 +27,6 @@ LESSON_TIMES = {
 }
 
 def generate_schedule(request):
-    # Очистити старий розклад перед новою генерацією
     ScheduleEntry.objects.all().delete()
 
     groups = Group.objects.all()

@@ -124,9 +124,9 @@ class ScheduleEntry(models.Model):
             ('Четвер', 'Четвер'),
             ('Пʼятниця', 'Пʼятниця')
         ],
-        default='Понеділок'  # ← додай це
+        default='Понеділок'
     )
-    lesson_number = models.PositiveIntegerField(null=True)  # 1, 2, 3, 4
+    lesson_number = models.PositiveIntegerField(null=True)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True, blank=True)
     classroom = models.ForeignKey(Classroom, on_delete=models.PROTECT, null=True, blank=True)
 
