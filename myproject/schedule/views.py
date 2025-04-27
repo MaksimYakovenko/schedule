@@ -1,10 +1,10 @@
 from django.shortcuts import render
+import random
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 
 from schedule.models import (Department, Teacher, Classroom, Lesson, Group,
                              Subject, Semester, ScheduleEntry)
-from schedule.utils import generate_schedule
 from django.shortcuts import redirect
 
 
@@ -17,32 +17,53 @@ def home(request):
     })
 
 
-def schedule_list_view(request):
-    schedule_entries = ScheduleEntry.objects.all()  # Отримуємо всі записи
 
-    return render(request, 'schedule_list.html', {
-        'schedule_entries': schedule_entries  # Передаємо записи в контекст
-    })
+DAYS_OF_WEEK = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', 'Пʼятниця']
+LESSON_TIMES = {
+    1: '08:00-09:00',
+    2: '10:00-11:00',
+    3: '12:00-13:00',
+    4: '14:00-15:00',
+}
 
-class ScheduleListView(ListView):
-    model = ScheduleEntry
-    template_name = 'schedule_list.html'
-    context_object_name = 'schedule_entries'
+def generate_schedule(request):
+    # Очистити старий розклад перед новою генерацією
+    ScheduleEntry.objects.all().delete()
 
-    def get_queryset(self):
-        return ScheduleEntry.objects.select_related(
-            'lesson__group',
-            'lesson__subject',
-            'lesson__teacher',
-            'classroom',
-            'timeslot'
-        ).order_by('lesson__group__name', 'timeslot__day',
-                   'timeslot__lesson_number')
+    groups = Group.objects.all()
+    lessons = Lesson.objects.all()
+    classrooms = Classroom.objects.all()
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['groups'] = sorted(set(entry.lesson.group for entry in context['schedule_entries']), key=lambda g: g.name)
-        return context
+    for group in groups:
+        for day in DAYS_OF_WEEK:
+            number_of_lessons = random.randint(1, 4)  # від 1 до 4 пар
+            lesson_numbers = random.sample(range(1, 5), number_of_lessons)  # Унікальні номери пар (без повторів)
+
+            for lesson_number in lesson_numbers:
+                lesson = random.choice(lessons)
+                classroom = random.choice(classrooms)
+
+                ScheduleEntry.objects.create(
+                    group=group,
+                    day_of_week=day,
+                    lesson_number=lesson_number,
+                    lesson=lesson,
+                    classroom=classroom
+                )
+
+    return redirect('schedule_view')
+
+def schedule_view(request):
+    groups = Group.objects.all()
+    schedule_entries = ScheduleEntry.objects.all().order_by('group__name', 'day_of_week', 'lesson_number')
+
+    context = {
+        'groups': groups,
+        'schedule_entries': schedule_entries,
+        'lesson_times': LESSON_TIMES,
+    }
+    return render(request, 'schedule.html', context)
+
 
 
 class AddDepartment(CreateView):
@@ -80,7 +101,7 @@ class LessonListView(ListView):
 
 class SemesterDeleteView(DeleteView):
     model = Semester
-    template_name = 'add_semester.html'
+    template_name = 'semester_confirm_delete.html'
     success_url = reverse_lazy('semester_list')
     fields = '__all__'
 

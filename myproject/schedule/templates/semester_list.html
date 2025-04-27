@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'schedule/css/department_list.css' %}" type="text/css" media="all" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <title>Список семестрів</title>
 </head>
 <body>
@@ -31,8 +32,12 @@
                     <td>{{ semester.start_date }}</td>
                     <td>{{ semester.end_date }}</td>
                     <td>
-                        <a href="{% url 'semester_delete' semester.pk %}" class="delete-btn">Видалити</a>
-                        <a href="{% url 'semester_edit' semester.pk %}" class="delete-btn">Редагувати</a>
+                       <a href="{% url 'semester_edit' semester.pk %}" class="icon-btn edit-btn" title="Редагувати">
+    <i class="fas fa-edit"></i>
+</a>
+<a href="{% url 'semester_delete' semester.pk %}" class="icon-btn delete-btn" title="Видалити">
+    <i class="fas fa-trash-alt"></i>
+</a>
                     </td>
                 </tr>
             {% empty %}

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from schedule.models import (Department, Teacher, Classroom, Lesson, Group,
-                             Subject, Semester, ScheduleEntry, TimeSlot)
+                             Subject, Semester)
 
 
 
@@ -65,34 +65,11 @@ class LessonAdmin(admin.ModelAdmin):
     autocomplete_fields = ('teacher', 'group', 'subject', 'semester')
 
 
-@admin.register(TimeSlot)
-class TimeSlotAdmin(admin.ModelAdmin):
-    list_display = ('day', 'lesson_number')
-    list_filter = ('day',)
-    ordering = ('day', 'lesson_number')
-    search_fields = ('day',)
-
-
-@admin.action(description="Згенерувати розклад")
+@admin.action(description='Згенерувати розклад')
 def generate_schedule_action(modeladmin, request, queryset):
-    from .utils import generate_schedule
-    generate_schedule()
+    for semester in queryset:
+        generate_schedule(semester)
 
+class SemesterAdmin(admin.ModelAdmin):
+    actions = [generate_schedule_action]
 
-@admin.register(ScheduleEntry)
-class ScheduleEntryAdmin(admin.ModelAdmin):
-    list_display = ('lesson', 'timeslot', 'classroom')
-    list_filter = ('timeslot', 'lesson', 'classroom')
-    search_fields = ('lesson__subject__name', 'classroom__name')
-    autocomplete_fields = ('lesson', 'classroom')
-
-    actions = ['generate_schedule_for_selected']
-
-    @admin.action(description="Згенерувати розклад для вибраних уроків")
-    def generate_schedule_for_selected(self, request, queryset):
-
-        for entry in queryset:
-            lesson = entry.lesson
-            group = lesson.group
-            classrooms = Classroom.objects.all()  # Аудиторії для розкладу
-            generate_schedule_for_group(lesson, group, classrooms)

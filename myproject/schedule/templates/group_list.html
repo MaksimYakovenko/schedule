@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'schedule/css/department_list.css' %}" type="text/css" media="all" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <title>Список груп</title>
 </head>
 <body>
@@ -26,8 +27,12 @@
                     <td>{{ forloop.counter }}</td>
                     <td>{{ group.name }}</td>
                     <td>
-                        <a href="{% url 'group_delete' group.pk %}" class="delete-btn">Видалити</a>
-                        <a href="{% url 'group_edit' group.pk %}" class="delete-btn">Редагувати</a>
+                       <a href="{% url 'group_edit' group.pk %}" class="icon-btn edit-btn" title="Редагувати">
+    <i class="fas fa-edit"></i>
+</a>
+<a href="{% url 'group_delete' group.pk %}" class="icon-btn delete-btn" title="Видалити">
+    <i class="fas fa-trash-alt"></i>
+</a>
                     </td>
                 </tr>
             {% empty %}
