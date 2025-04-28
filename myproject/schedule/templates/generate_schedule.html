@@ -1,6 +1,15 @@
-<h1>Генерація розкладу</h1>
-
-<form method="post">
+{% load_static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Генерація розкладу</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'schedule/css/schedule.css' %}" type="text/css" media="all" />
+</head>
+<body>
+    <form method="post">
     {% csrf_token %}
-    <button type="submit" class="btn btn-primary">Згенерувати розклад</button>
+    <button type="submit">Згенерувати розклад</button>
 </form>
+</body>
+</html>

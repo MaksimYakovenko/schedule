@@ -230,6 +230,7 @@ class LessonDeleteView(DeleteView):
     success_url = reverse_lazy('lesson_list')
 
 
+
 class GroupDeleteView(DeleteView):
     model = Group
     template_name = 'group_confirm_delete.html'
