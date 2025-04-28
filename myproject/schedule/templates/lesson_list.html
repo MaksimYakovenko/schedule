@@ -16,12 +16,10 @@
     <table>
         <thead>
             <tr>
-                <th>Номер пари</th>
-                <th>День</th>
                 <th>Група</th>
                 <th>Курс</th>
                 <th>Предмет</th>
-                <th>Аудиторія</th>
+                <th>Тип</th>
                 <th>Семестр</th>
                 <th>Викладач</th>
                 <th>Дії</th>
@@ -30,12 +28,10 @@
         <tbody>
             {% for lesson in lessons %}
                 <tr>
-                    <td>{{ lesson.number }}</td>
-                    <td>{{ lesson.weekday }}</td>
                     <td>{{ lesson.group }}</td>
                     <td>{{ lesson.course }}</td>
                     <td>{{ lesson.subject }}</td>
-                    <td>{{ lesson.classroom }}</td>
+                    <td>{{ lesson.lesson_type }}</td>
                     <td>{{ lesson.semester }}</td>
                     <td>{{ lesson.teacher }}</td>
                     <td>

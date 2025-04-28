@@ -28,33 +28,52 @@
     </form>
 
     <table border="1">
-        <thead>
+    <thead>
+        <tr>
+            <th></th>
+            {% for group in groups %}
+                <th>{{ group.name }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for day in days_of_week %}
             <tr>
-                {% for group in groups %}
-                    <th>{{ group.name }}</th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
+                <td style="
+   text-align: center;
+    vertical-align: middle;
+    transform: rotate(-0.25turn);
+    white-space: nowrap;
+
+    ">
+    {{ day }}
+</td>
                 {% for group in groups %}
                     <td>
-                        {% for entry in schedule_entries %}
-                            {% if entry.group == group %}
-                                <div class="schedule-entry">
-                                    <span class="day">{{ entry.day_of_week }}</span>
-                                    <span>{{ entry.lesson_number }} пара</span>
-                                    <span class="subject">{{ entry.lesson.subject.name }}</span>
-                                    <span class="teacher">{{ entry.lesson.teacher.position }} {{ entry.lesson.teacher.full_name }}</span>
-                                    <span class="degree">{{ entry.lesson.teacher.degree }}</span>
-                                    <span class="classroom">ауд. {{ entry.classroom.name }}</span>
-                                </div>
+                        {% with lesson_count=0 %}
+                            {% for entry in schedule_entries %}
+                                {% if entry.group == group and entry.day_of_week == day %}
+                                    {% with lesson_count=lesson_count|add:1 %}
+                                        <div class="schedule-entry">
+                                            <span class="lesson-number">{{ entry.lesson_number }} пара</span>
+                                            <span class="subject">{{ entry.lesson.subject.name }}</span>
+                                            <span class="subject">{{ entry.lesson.lesson_type }}</span>
+                                            <span class="teacher">{{ entry.lesson.teacher.position }} {{ entry.lesson.teacher.full_name }}</span>
+                                            <span class="degree">{{ entry.lesson.teacher.degree }}</span>
+                                            <span class="classroom">ауд. {{ entry.classroom.name }}</span>
+                                        </div>
+                                    {% endwith %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if lesson_count < 4 %}
+                                <div class="no-lessons">Немає занять</div>
                             {% endif %}
-                        {% endfor %}
+                        {% endwith %}
                     </td>
                 {% endfor %}
             </tr>
-        </tbody>
-    </table>
+        {% endfor %}
+    </tbody>
+</table>
 </body>
 </html>

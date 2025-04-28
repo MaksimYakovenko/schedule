@@ -21,6 +21,7 @@ def home(request):
 
 
 DAYS_OF_WEEK = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', 'Пʼятниця']
+LESSON_NUMBERS = [1, 2, 3, 4]
 LESSON_TIMES = {
     1: '08:00-09:00',
     2: '10:00-11:00',
@@ -29,11 +30,14 @@ LESSON_TIMES = {
 }
 
 def generate_schedule(request):
+    # Спочатку видаляємо старі записи
     ScheduleEntry.objects.all().delete()
 
     groups = Group.objects.all()
     lessons = Lesson.objects.all()
     classrooms = Classroom.objects.all()
+
+    schedule_dict = {}
 
     for group in groups:
         for day in DAYS_OF_WEEK:
@@ -44,6 +48,7 @@ def generate_schedule(request):
                 lesson = random.choice(lessons)
                 classroom = random.choice(classrooms)
 
+                # Створюємо запис у базі даних
                 ScheduleEntry.objects.create(
                     group=group,
                     day_of_week=day,
@@ -52,12 +57,20 @@ def generate_schedule(request):
                     classroom=classroom
                 )
 
+            # Додаємо запис для дня і групи в словник, якщо уроки є
+            if group.id not in schedule_dict:
+                schedule_dict[group.id] = {}
+
+            schedule_dict[group.id][day] = lesson_numbers if number_of_lessons > 0 else []
+
+    # Зберігаємо словник в сесії для подальшого використання
+    request.session['schedule_dict'] = schedule_dict
+
     return redirect('schedule_view')
 
 def schedule_view(request):
     groups = Group.objects.all()
-    teachers = Teacher.objects.all()  # Отримуємо список всіх викладачів
-
+    teachers = Teacher.objects.all()  # Get all teachers
     teacher_id = request.GET.get('teacher_id')
 
     if teacher_id:
@@ -70,14 +83,32 @@ def schedule_view(request):
         key=lambda x: (DAYS_OF_WEEK.index(x.day_of_week), x.lesson_number)
     )
 
+    # Preprocess schedule availability for each group and day
+    schedule_availability = {}
+    for group in groups:
+        schedule_availability[group.id] = {}
+        for day in DAYS_OF_WEEK:
+            schedule_availability[group.id][day] = False  # Assume no lessons initially
+
+        # Mark the availability for each group and day
+        for entry in schedule_entries:
+            if entry.group.id not in schedule_availability:
+                schedule_availability[entry.group.id] = {}
+
+            schedule_availability[entry.group.id][entry.day_of_week] = True
+
     context = {
+        'days_of_week': DAYS_OF_WEEK,
+        'lesson_numbers': LESSON_NUMBERS,
         'groups': groups,
         'schedule_entries': schedule_entries,
         'lesson_times': LESSON_TIMES,
-        'teachers': teachers,  # Передаємо список викладачів в шаблон
-        'selected_teacher_id': teacher_id,  # Передаємо вибраного викладача в шаблон
+        'teachers': teachers,
+        'selected_teacher_id': teacher_id,
+        'schedule_availability': schedule_availability,
     }
     return render(request, 'schedule.html', context)
+
 
 
 

@@ -92,6 +92,18 @@ class Subject(models.Model):
 
 
 class Lesson(models.Model):
+    PRACTICAL = 'Практична'
+    LECTURE = 'Лекція'
+    SEMINAR = 'Семінар'
+    LABORATORY = 'Лабораторна'
+
+    LESSON_TYPE_CHOICES = [
+        (PRACTICAL, 'Практична'),
+        (LECTURE, 'Лекція'),
+        (SEMINAR, 'Семінар'),
+        (LABORATORY, 'Лабораторна'),
+    ]
+
     teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT)
     group = models.ForeignKey(Group, on_delete=models.PROTECT)
     course = models.CharField(max_length=1, choices=[(str(i), f"{i} курс") for i in range(1, 7)])
@@ -103,13 +115,20 @@ class Lesson(models.Model):
         verbose_name="Кількість пар на тиждень"
     )
 
+    lesson_type = models.CharField(
+        max_length=20,
+        choices=LESSON_TYPE_CHOICES,
+        default=PRACTICAL,
+        verbose_name="Тип заняття"
+    )
+
     class Meta:
         verbose_name = "Заняття"
         verbose_name_plural = "Заняття"
         db_table = 'lesson'
 
     def __str__(self):
-        return f"{self.subject} ({self.group})"
+        return f"{self.subject} ({self.group}) - {self.lesson_type}"
 
 
 
