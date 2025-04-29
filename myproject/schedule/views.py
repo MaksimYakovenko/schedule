@@ -1,6 +1,6 @@
 from django.shortcuts import render
 import random
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 
 from schedule.models import (Department, Teacher, Classroom, Lesson, Group,
@@ -31,6 +31,11 @@ LESSON_TIMES = {
 }
 
 def generate_schedule(request):
+    if request.method == 'POST':
+        semester_id = request.POST.get('semester_id')
+        if not semester_id:
+            return HttpResponseBadRequest("Семестр не вибрано.")
+
     ScheduleEntry.objects.all().delete()
 
     groups = Group.objects.filter(lesson__isnull=False).distinct()
@@ -91,17 +96,32 @@ def generate_schedule(request):
 
     request.session['schedule_dict'] = schedule_dict
 
-    return redirect('schedule_view')
+    return redirect(f"{reverse('schedule_view')}?semester_id={semester_id}")
 
 def schedule_view(request):
     groups = Group.objects.all()
     teachers = Teacher.objects.all()
+    semesters = Semester.objects.all()
     teacher_id = request.GET.get('teacher_id')
+    semester_id = request.GET.get('semester_id')
+
+    schedule_entries = ScheduleEntry.objects.all()
+
+    if semester_id in [None, '', 'None']:
+        semester_id = None
+
+    if teacher_id in [None, '', 'None']:
+        teacher_id = None
 
     if teacher_id:
-        schedule_entries = ScheduleEntry.objects.filter(lesson__teacher_id=teacher_id)
-    else:
-        schedule_entries = ScheduleEntry.objects.all()
+        schedule_entries = schedule_entries.filter(
+            lesson__teacher_id=teacher_id)
+
+    if semester_id:
+        schedule_entries = schedule_entries.filter(
+            lesson__semester_id=semester_id)
+
+
 
     schedule_entries = sorted(
         schedule_entries,
@@ -136,6 +156,8 @@ def schedule_view(request):
         'lesson_times': LESSON_TIMES,
         'teachers': teachers,
         'selected_teacher_id': teacher_id,
+        'selected_semester_id': semester_id,
+        'semesters': semesters,
         'schedule_availability': schedule_availability,
     }
     return render(request, 'schedule.html', context)

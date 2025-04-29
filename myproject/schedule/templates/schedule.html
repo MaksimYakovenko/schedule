@@ -10,22 +10,52 @@
     <h1>Розклад</h1>
 
     <form method="get" action="{% url 'schedule_view' %}">
-        <label for="teacher">Виберіть викладача:</label>
-        <select name="teacher_id" id="teacher">
-            <option value="">Всі викладачі</option>
-            {% for teacher in teachers %}
-                <option value="{{ teacher.id }}" {% if teacher.id == selected_teacher_id %}selected{% endif %}>
-                    {{ teacher.full_name }}
-                </option>
-            {% endfor %}
-        </select>
-        <button type="submit">Фільтрувати</button>
-    </form>
+    <label for="teacher">Виберіть викладача:</label>
+    <select name="teacher_id" id="teacher">
+        <option value="">Всі викладачі</option>
+        {% for teacher in teachers %}
+            <option value="{{ teacher.id }}" {% if teacher.id == selected_teacher_id %}selected{% endif %}>
+                {{ teacher.full_name }}
+            </option>
+        {% endfor %}
+    </select>
 
-    <form action="{% url 'generate_schedule' %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Згенерувати розклад</button>
-    </form>
+    <label for="semester">Семестр:</label>
+    <select name="semester_id" id="semester">
+        <option value="">Усі семестри</option>
+        {% for semester in semesters %}
+            <option value="{{ semester.id }}" {% if semester.id == selected_semester_id %}selected{% endif %}>
+                {{ semester.year }} / {{ semester.number }} семестр
+            </option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Фільтрувати</button>
+</form>
+
+<form method="post" action="{% url 'generate_schedule' %}">
+    {% csrf_token %}
+    <input type="hidden" name="semester_id" id="hiddenSemesterId" value="{{ selected_semester_id }}">
+    <button type="submit" id="generateButton" disabled>Згенерувати розклад</button>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const semesterSelect = document.getElementById('semester');
+        const generateButton = document.getElementById('generateButton');
+        const hiddenSemesterId = document.getElementById('hiddenSemesterId');
+
+        function updateButtonState() {
+            const selected = semesterSelect.value;
+            generateButton.disabled = !selected;
+            hiddenSemesterId.value = selected;
+        }
+
+        semesterSelect.addEventListener('change', updateButtonState);
+        updateButtonState();
+    });
+</script>
+
 
     <table border="1">
     <thead>
