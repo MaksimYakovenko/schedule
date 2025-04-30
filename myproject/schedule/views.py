@@ -53,73 +53,46 @@ def generate_schedule(request):
         for lesson in group_lessons:
             lessons_scheduled = 0
             attempts = 0
-            max_attempts = 200
-
-            # Підрахунок кількості пар на день для цієї групи
-            group_day_load = defaultdict(int)
+            max_attempts = 100
 
             while lessons_scheduled < lesson.hours_per_week and attempts < max_attempts:
                 attempts += 1
+                day = random.choice(DAYS_OF_WEEK)
+                lesson_number = random.choice(LESSON_NUMBERS)
 
-                # Впорядкуй дні за навантаженням для цієї групи (найменше спочатку)
-                sorted_days = sorted(DAYS_OF_WEEK,
-                                     key=lambda d: group_day_load[d])
+                if (
+                    lesson.teacher.id in teacher_occupancy[(day, lesson_number)]
+                    or group.id in group_occupancy[(day, lesson_number)]
+                ):
+                    continue
 
-                placed = False
-                for day in sorted_days:
-                    for lesson_number in LESSON_NUMBERS:
-                        if (
-                                lesson.teacher.id in teacher_occupancy[
-                            (day, lesson_number)] or
-                                group.id in group_occupancy[
-                            (day, lesson_number)]
-                        ):
-                            continue
+                available_classrooms = [
+                    classroom for classroom in classrooms
+                    if classroom.id not in classroom_occupancy[(day, lesson_number)]
+                ]
 
-                        available_classrooms = [
-                            classroom for classroom in classrooms
-                            if classroom.id not in classroom_occupancy[
-                                (day, lesson_number)]
-                        ]
+                if not available_classrooms:
+                    continue
 
-                        if not available_classrooms:
-                            continue
+                classroom = random.choice(available_classrooms)
 
-                        classroom = random.choice(available_classrooms)
+                ScheduleEntry.objects.create(
+                    group=group,
+                    day_of_week=day,
+                    lesson_number=lesson_number,
+                    lesson=lesson,
+                    classroom=classroom
+                )
 
-                        # Створюємо запис
-                        ScheduleEntry.objects.create(
-                            group=group,
-                            day_of_week=day,
-                            lesson_number=lesson_number,
-                            lesson=lesson,
-                            classroom=classroom
-                        )
+                teacher_occupancy[(day, lesson_number)].add(lesson.teacher.id)
+                classroom_occupancy[(day, lesson_number)].add(classroom.id)
+                group_occupancy[(day, lesson_number)].add(group.id)
 
-                        teacher_occupancy[(day, lesson_number)].add(
-                            lesson.teacher.id)
-                        classroom_occupancy[(day, lesson_number)].add(
-                            classroom.id)
-                        group_occupancy[(day, lesson_number)].add(group.id)
-                        group_day_load[day] += 1
+                if group.id not in schedule_dict:
+                    schedule_dict[group.id] = {}
+                schedule_dict[group.id].setdefault(day, []).append(lesson_number)
 
-                        if group.id not in schedule_dict:
-                            schedule_dict[group.id] = {}
-                        schedule_dict[group.id].setdefault(day, []).append(
-                            lesson_number)
-
-                        lessons_scheduled += 1
-                        placed = True
-                        break  # вийти з циклу LESSON_NUMBERS
-
-                    if placed:
-                        break
-
-        if lessons_scheduled < lesson.hours_per_week:
-            print(
-                f"⚠️ Не вдалося розмістити всі {lesson.hours_per_week} занять для: {lesson}")
-            messages.warning(request,
-                             f"Не вдалося розмістити всі заняття для {lesson}. Розміщено {lessons_scheduled}/{lesson.hours_per_week}.")
+                lessons_scheduled += 1
 
     request.session['schedule_dict'] = schedule_dict
     return redirect(f"{reverse('schedule_view')}?semester_id={semester_id}")
@@ -148,7 +121,6 @@ def schedule_view(request):
             lesson__semester_id=semester_id)
 
 
-
     schedule_entries = sorted(
         schedule_entries,
         key=lambda x: (DAYS_OF_WEEK.index(x.day_of_week), x.lesson_number)
@@ -173,7 +145,23 @@ def schedule_view(request):
 
             schedule_availability[entry.group.id][entry.day_of_week] = True
 
+    groups_by_course = defaultdict(list)
+    for group in groups_with_schedule:
+        lessons = Lesson.objects.filter(group=group)
+        distinct_courses = lessons.values_list('course', flat=True).distinct()
+
+        for course in distinct_courses:
+            groups_by_course[course].append(group)
+
+    sorted_course_keys = sorted(
+        groups_by_course.keys(),
+        key=lambda x: (int(x[1]) if x.startswith('m') else int(x))
+        if x.isdigit() else (5 if x == 'm1' else 6)
+    )
+
     context = {
+        'groups_by_course': dict(groups_by_course),
+        'sorted_course_keys': sorted_course_keys,
         'groups_with_schedule': groups_with_schedule,
         'days_of_week': DAYS_OF_WEEK,
         'lesson_numbers': LESSON_NUMBERS,
@@ -187,8 +175,6 @@ def schedule_view(request):
         'schedule_availability': schedule_availability,
     }
     return render(request, 'schedule.html', context)
-
-
 
 
 class AddDepartment(CreateView):

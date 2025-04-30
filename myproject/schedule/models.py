@@ -96,17 +96,29 @@ class Lesson(models.Model):
     LECTURE = 'Лекція'
     SEMINAR = 'Семінар'
     LABORATORY = 'Лабораторна'
+    CONSULTATION = 'Консультація'
 
     LESSON_TYPE_CHOICES = [
         (PRACTICAL, 'Практична'),
         (LECTURE, 'Лекція'),
         (SEMINAR, 'Семінар'),
         (LABORATORY, 'Лабораторна'),
+        (CONSULTATION, 'Консультація'),
+    ]
+
+
+    COURSE_CHOICES = [
+        ('1', '1 курс'),
+        ('2', '2 курс'),
+        ('3', '3 курс'),
+        ('4', '4 курс'),
+        ('m1', '1 курс маг.'),
+        ('m2', '2 курс маг.'),
     ]
 
     teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT)
     group = models.ForeignKey(Group, on_delete=models.PROTECT)
-    course = models.CharField(max_length=1, choices=[(str(i), f"{i} курс") for i in range(1, 7)])
+    course = models.CharField(max_length=2, choices=COURSE_CHOICES)
     subject = models.ForeignKey(Subject, on_delete=models.PROTECT)
     semester = models.ForeignKey(Semester, on_delete=models.PROTECT)
     hours_per_week = models.PositiveIntegerField(
