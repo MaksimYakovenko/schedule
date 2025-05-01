@@ -1,0 +1,25 @@
+{% load static %}
+
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'schedule/css/contacts.css' %}" type="text/css" media="all" />
+  <title>Контакти</title>
+</head>
+<body>
+{% include 'appbar.html' %}
+  <div class="two-columns-layout">
+    <article>
+      <h1 class="header">Контакти</h1>
+      <p><strong>e-mail:</strong> <a href="mailto:ecampus@kpi.ua">ecampus@kpi.ua</a></p>
+      <p><a href="https://example.com/complaints-form">Форма скарг та пропозицій</a></p>
+    </article>
+    <div class="photo-wrapper">
+      <img class="campus-photo" src="{% static 'schedule/images/contacts.jpg' %}" alt="Фото аудиторії" />
+    </div>
+  </div>
+  <br/><br/>
+  {% include 'footer.html' %}
+</body>
+</html>

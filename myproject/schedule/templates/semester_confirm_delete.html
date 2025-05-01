@@ -1,0 +1,21 @@
+{% load static %}
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'schedule/css/teacher_confirm_delete.css' %}" type="text/css" media="all" />
+    <title>Видалити семестр</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Видалити пару</h1>
+        <p>Ви впевнені, що хочете видалити семестр <strong>"{{ object }}"</strong>?</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Так, видалити</button>
+            <a href="{% url 'lesson_list' %}" class="btn btn-cancel">Скасувати</a>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,214 @@
+{% load static %}
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<!--    <link rel="stylesheet" href="{% static 'schedule/css/teacher_list.css' %}" type="text/css" media="all" />-->
+    <style>
+        h1 {
+    text-align: center;
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 90%;
+    margin: 0 auto 30px auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    background-color: #ffffff;
+}
+
+th, td {
+    padding: 15px 20px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+th {
+    background: linear-gradient(to right, #007bff, #0056b3);
+    color: #fff;
+    font-weight: 600;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f6fc;
+}
+
+tr:hover {
+    background-color: #e9f1ff;
+}
+
+a {
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+a:hover {
+    transform: scale(1.05);
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    margin-right: 5px;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+.add-btn {
+    display: inline-block;
+    margin: 10px auto;
+    padding: 12px 25px;
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.add-btn:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
+
+.filter-form {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.filter-form select, .filter-form button {
+    padding: 10px;
+    font-size: 14px;
+    margin: 5px;
+}
+
+.filter-form button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.filter-form button:hover {
+    background-color: #0056b3;
+}
+
+.footer {
+    margin-top: auto;
+    width: 100%;
+}
+        .action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn i {
+    font-size: 15px;
+}
+
+.edit-btn {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #138496;
+    transform: translateY(-1px);
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+}
+    </style>
+    <title>Список викладачів</title>
+</head>
+<body>
+{% include 'appbar.html' %}
+<br/>
+    <div class="wrapper">
+        <h1>Список викладачів</h1>
+        <form method="GET" class="filter-form">
+            <label for="department">Оберіть кафедру:</label>
+            <select name="department" id="department">
+                <option value="">Всі кафедри</option>
+                {% for department in departments %}
+                    <option value="{{ department }}" {% if selected_department == department %}selected{% endif %}>
+                        {{ department }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit">Фільтрувати</button>
+        </form>
+
+        {% if teachers %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ПІБ</th>
+                        <th>Посада</th>
+                        <th>Науковий ступінь</th>
+                        <th>Кафедра</th>
+                        <th>Дії</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for teacher in teachers %}
+                        <tr>
+                            <td>{{ teacher.full_name }}</td>
+                            <td>{{ teacher.position }}</td>
+                            <td>{{ teacher.degree }}</td>
+                            <td>{{ teacher.department }}</td>
+                            <td>
+                                <a href="{% url 'teacher_edit' teacher.pk %}" class="icon-btn edit-btn" title="Редагувати">
+    <i class="fas fa-edit"></i>
+</a>
+<a href="{% url 'teacher_delete' teacher.pk %}" class="icon-btn delete-btn" title="Видалити">
+    <i class="fas fa-trash-alt"></i>
+</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p style="text-align: center;">Викладачів ще немає або не знайдено за вибраною кафедрою.</p>
+        {% endif %}
+
+        <div style="text-align: center;">
+            <a href="{% url 'add_teacher' %}" class="add-btn">Додати викладача</a>
+        </div>
+    </div>
+
+<br/><br/>
+    <footer class="footer">
+        {% include 'footer.html' %}
+    </footer>
+</body>
+</html>

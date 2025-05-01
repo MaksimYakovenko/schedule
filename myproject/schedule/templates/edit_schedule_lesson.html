@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Редагування пари</title>
+</head>
+<body>
+    <h2>Редагування пари</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Зберегти</button>
+        <a href="{% url 'schedule_view' %}">Скасувати</a>
+    </form>
+</body>
+</html>

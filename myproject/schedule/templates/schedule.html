@@ -1,0 +1,149 @@
+{% load static %}
+{% load dict_filters %}
+{% load list_filters %}
+<html lang="uk" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Розклад</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'schedule/css/schedule.css' %}" type="text/css" media="all" />
+    <style>
+        .delete-button {
+            background-color: transparent;
+            border: none;
+            color: #e53935;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 6px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            transform: scale(0.9)
+        }
+
+        .delete-button:hover {
+            background-color: #ffe5e5;
+            transform: scale(1.1);
+        }
+
+        .delete-button:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <h1>Розклад</h1>
+
+    <form method="get" action="{% url 'schedule_view' %}">
+    <label for="teacher">Виберіть викладача:</label>
+    <select name="teacher_id" id="teacher">
+        <option value="">Всі викладачі</option>
+        {% for teacher in teachers %}
+            <option value="{{ teacher.id }}" {% if teacher.id == selected_teacher_id %}selected{% endif %}>
+                {{ teacher.full_name }}
+            </option>
+        {% endfor %}
+    </select>
+
+        <label for="course">Курс:</label>
+    <select name="course" id="course" onchange="this.form.submit()">
+        <option value="">Всі курси</option>
+        <option value="1" {% if selected_course == 1 %}selected{% endif %}>1 курс</option>
+        <option value="2" {% if selected_course == 2 %}selected{% endif %}>2 курс</option>
+        <option value="3" {% if selected_course == 3 %}selected{% endif %}>3 курс</option>
+        <option value="4" {% if selected_course == 4 %}selected{% endif %}>4 курс</option>
+        <option value="m1" {% if selected_course == m1 %}selected{% endif %}>1 курс маг.</option>
+        <option value="m2" {% if selected_course == m2 %}selected{% endif %}>2 курс маг.</option>
+    </select>
+
+    <label for="semester">Семестр:</label>
+    <select name="semester_id" id="semester">
+        <option value="">Усі семестри</option>
+        {% for semester in semesters %}
+            <option value="{{ semester.id }}" {% if semester.id == selected_semester_id %}selected{% endif %}>
+                {{ semester.year }} / {{ semester.number }} семестр
+            </option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Фільтрувати</button>
+</form>
+
+<form method="post" action="{% url 'generate_schedule' %}">
+    {% csrf_token %}
+    <input type="hidden" name="semester_id" id="hiddenSemesterId" value="{{ selected_semester_id }}">
+    <button type="submit" id="generateButton" disabled>Згенерувати розклад</button>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const semesterSelect = document.getElementById('semester');
+        const generateButton = document.getElementById('generateButton');
+        const hiddenSemesterId = document.getElementById('hiddenSemesterId');
+
+        function updateButtonState() {
+            const selected = semesterSelect.value;
+            generateButton.disabled = !selected;
+            hiddenSemesterId.value = selected;
+        }
+
+        semesterSelect.addEventListener('change', updateButtonState);
+        updateButtonState();
+    });
+</script>
+
+    {% for course in sorted_course_keys %}
+    <h2>{{ course }} курс</h2>
+    {% with course_groups=groups_by_course|dict_get:course %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th></th>
+                {% for group in course_groups %}
+                    <th>{{ group.name }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for day in days_of_week %}
+                <tr>
+                    <td style="text-align: center; vertical-align: middle; transform: rotate(-0.25turn); white-space: nowrap;">
+                        {{ day }}
+                    </td>
+                    {% for group in course_groups %}
+                        <td>
+                            {% with lesson_count=0 %}
+                                {% for entry in schedule_entries %}
+                                    {% if entry.group == group and entry.day_of_week == day %}
+                                        {% with lesson_count=lesson_count|add:1 %}
+                                            <div class="schedule-entry">
+                                                <strong class="lesson-number">{{ entry.lesson_number }} пара</strong>
+                                                <span class="subject">{{ entry.lesson.subject.name }}</span>
+                                                <span class="subject">{{ entry.lesson.lesson_type }}</span>
+                                                <span class="teacher">{{ entry.lesson.teacher.position }} {{ entry.lesson.teacher.full_name }}</span>
+                                                <span class="degree">{{ entry.lesson.teacher.degree }}</span>
+                                                <span class="classroom">ауд. {{ entry.classroom.name }}</span>
+                                                 <form method="post" action="{% url 'delete_lesson' entry.lesson.id %}" style="display:inline;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="delete-button" onclick="return confirm('Ви впевнені, що хочете видалити цю пару?');" title="Видалити пару">🗑️</button>
+                                                </form>
+
+                                            </div>
+                                        {% endwith %}
+                                    {% endif %}
+                                {% endfor %}
+                                {% if lesson_count < 1 %}
+                                    <div class="no-lessons">Немає занять</div>
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endwith %}
+{% endfor %}
+
+</body>
+</html>

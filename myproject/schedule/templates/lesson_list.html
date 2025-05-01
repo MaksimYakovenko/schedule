@@ -1,0 +1,66 @@
+{% load static %}
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'schedule/css/department_list.css' %}" type="text/css" media="all" />
+    <title>Список пар</title>
+
+</head>
+<body>
+{% include 'appbar.html' %}
+<br/>
+    <h1>Список зайнять</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Група</th>
+                <th>Курс</th>
+                <th>Предмет</th>
+                <th>Тип</th>
+                <th>К-сть пар</th>
+                <th>Семестр</th>
+                <th>Викладач</th>
+                <th>Дії</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lesson in lessons %}
+                <tr>
+                    <td>{{ lesson.group }}</td>
+                    <td>{{ lesson.course }}</td>
+                    <td>{{ lesson.subject }}</td>
+                    <td>{{ lesson.lesson_type }}</td>
+                    <td> {{ lesson.hours_per_week }} </td>
+                    <td>{{ lesson.semester }}</td>
+                    <td>{{ lesson.teacher }}</td>
+                    <td>
+                        <a href="{% url 'lesson_edit' lesson.pk %}" class="icon-btn edit-btn" title="Редагувати">
+    <i class="fas fa-edit"></i>
+</a>
+
+<a href="{% url 'lesson_delete' lesson.pk %}" class="icon-btn delete-btn" title="Видалити">
+    <i class="fas fa-trash-alt"></i>
+</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">Пар ще немає.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+   <div style="text-align: center;">
+            <a href="{% url 'add_lesson' %}" class="add-btn">Додати пару</a>
+        </div>
+
+<br/><br/>
+<footer class="footer">
+        {% include 'footer.html' %}
+    </footer>
+</body>
+</html>

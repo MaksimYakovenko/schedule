@@ -1,0 +1,53 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дашборд</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'schedule/css/home.css' %}" type="text/css" media="all" />
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Меню</h2>
+        <ul>
+            <li><a href="/admin/">Адміністративна панель</a></li>
+            <li><a href="/departments">Кафедри</a></li>
+            <li><a href="/teachers">Викладачі</a></li>
+            <li><a href="/groups">Групи</a></li>
+            <li><a href="/subjects">Предмети</a></li>
+            <li><a href="/audiences">Аудиторії</a></li>
+            <li><a href="/semesters">Навчальні семестри</a></li>
+            <li><a href="/lessons/">Формування пар</a></li>
+            <li><a href="/schedule/">Формування розкладу</a></li>
+            <li><a href="/contacts/">Контакти</a></li>
+            <li><a href="/about/">Про проєкт</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <div class="header">Застосунок для формування розкладу</div>
+        <div class="cards">
+            <div class="card">
+                <i class="fas fa-university" style="color: #27ae60;"></i>
+                <h3>Кількість кафедр</h3>
+                <p>{{ department_count }}</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-calendar-check" style="color: #f1c40f;"></i>
+                <h3>Заплановані заняття</h3>
+                <p>{{ lessons_count }}</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-chalkboard-teacher" style="color: #e74c3c;"></i>
+                <h3>Кількість викладачів</h3>
+                <p>{{ teacher_count }}</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-book" style="color: #3498db;"></i>
+                <h3>Додаткові ресурси</h3>
+                <p>8</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+{% load static %}
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'schedule/css/department_list.css' %}" type="text/css" media="all" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Список аудиторій</title>
+</head>
+<body>
+{% include 'appbar.html' %}
+<br/>
+    <h1>Список аудиторій</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Номер Аудиторії</th>
+                <th>Місткість</th>
+                <th>Дії</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for audience in audiences %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ audience.name }}</td>
+                    <td>{{ audience.capacity }}</td>
+                    <td>
+                        <a href="{% url 'audience_edit' audience.pk %}" class="icon-btn edit-btn" title="Редагувати">
+    <i class="fas fa-edit"></i>
+</a>
+<a href="{% url 'audience_delete' audience.pk %}" class="icon-btn delete-btn" title="Видалити">
+    <i class="fas fa-trash-alt"></i>
+</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">Аудиторій ще немає.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+<div style="text-align: center;">
+<a href="{% url 'add_audience' %}" class="add-btn">Додати аудиторію</a>
+</div>
+<br/><br/>
+<footer class="footer">
+        {% include 'footer.html' %}
+    </footer>
+</body>
+</html>

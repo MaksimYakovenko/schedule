@@ -1,0 +1,129 @@
+{% load static %}
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'schedule/css/appbar.css' %}" type="text/css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #2C3E50;
+      padding: 10px 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo-wrapper {
+      flex-shrink: 0;
+      width: 220px;
+    }
+
+    .logo {
+      width: 100%;
+      height: auto;
+    }
+
+    .nav {
+      display: flex;
+      gap: 20px;
+    }
+
+    .menu-link {
+      color: #ECF0F1;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 8px 12px;
+      transition: color 0.3s ease;
+    }
+
+    .menu-link:hover {
+      color: #1ABC9C;
+    }
+
+    .burger-menu-button {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 28px;
+      color: #ECF0F1;
+      cursor: pointer;
+    }
+
+    .burger-menu-container {
+      display: none;
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background: #34495E;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .burger-menu-nav {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .burger-menu-link {
+      color: #ECF0F1;
+      text-decoration: none;
+      padding: 12px 16px;
+      display: block;
+      transition: background 0.3s ease;
+    }
+
+    .burger-menu-link:hover {
+      background: #1ABC9C;
+    }
+
+    @media (max-width: 768px) {
+      .nav {
+        display: none;
+      }
+
+      .burger-menu-button {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="nav">
+      <a class="menu-link" href="/">Розклад КНУ</a>
+    </nav>
+    <nav class="nav">
+      <a class="menu-link" href="/about">Про проєкт</a>
+      <a class="menu-link" href="/contacts">Контакти</a>
+    </nav>
+    <button class="burger-menu-button" onclick="toggleMenu()">☰</button>
+  </header>
+
+  <div class="burger-menu-container" id="burgerMenu">
+    <nav class="burger-menu-nav">
+      <a class="burger-menu-link" href="/about">Про проєкт</a>
+      <a class="burger-menu-link" href="/contacts">Контакти</a>
+    </nav>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('burgerMenu');
+      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    }
+  </script>
+</body>
+</html>
