@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 import random
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
@@ -7,6 +7,7 @@ from schedule.models import (Department, Teacher, Classroom, Lesson, Group,
                              Subject, Semester, ScheduleEntry)
 from django.shortcuts import redirect
 from collections import defaultdict
+from django.views.decorators.http import require_POST
 
 
 def home(request):
@@ -180,6 +181,13 @@ def schedule_view(request):
         'selected_course': course,
     }
     return render(request, 'schedule.html', context)
+
+
+@require_POST
+def delete_lesson(request, lesson_id):
+    lesson = get_object_or_404(Lesson, id=lesson_id)
+    lesson.delete()
+    return redirect('schedule_view')
 
 
 class AddDepartment(CreateView):

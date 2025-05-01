@@ -11,7 +11,8 @@ from .views import (AddDepartment, AddTeacher, About, Contacts, TeacherListView,
                     GroupDeleteView, GroupUpdateView, SubjectListView,
                     AddSubject, SubjectDeleteView, SubjectUpdateView,
                     AddSemester, SemesterListView, SemesterDeleteView,
-                    SemesterUpdateView, LessonListView, generate_schedule, schedule_view)
+                    SemesterUpdateView, LessonListView, generate_schedule,
+                    schedule_view, delete_lesson, )
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -61,4 +62,7 @@ urlpatterns = [
     path('lessons/', LessonListView.as_view(), name='lesson_list'),
     path('generate/', generate_schedule, name='generate_schedule'),
     path('schedule/', schedule_view, name='schedule_view'),
+    path('schedule/<int:lesson_id>/delete/', views.delete_lesson, name='delete_lesson'),
+    path('schedule/<int:lesson_id>/edit/', views.edit_lesson,
+         name='edit_lesson'),
 ]

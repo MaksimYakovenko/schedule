@@ -1,12 +1,35 @@
 {% load static %}
 {% load dict_filters %}
 {% load list_filters %}
-<html lang="uk">
+<html lang="uk" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Розклад</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'schedule/css/schedule.css' %}" type="text/css" media="all" />
+    <style>
+        .delete-button {
+            background-color: transparent;
+            border: none;
+            color: #e53935;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 6px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            transform: scale(0.9)
+        }
+
+        .delete-button:hover {
+            background-color: #ffe5e5;
+            transform: scale(1.1);
+        }
+
+        .delete-button:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.4);
+        }
+    </style>
 </head>
 <body>
     <h1>Розклад</h1>
@@ -100,6 +123,11 @@
                                                 <span class="teacher">{{ entry.lesson.teacher.position }} {{ entry.lesson.teacher.full_name }}</span>
                                                 <span class="degree">{{ entry.lesson.teacher.degree }}</span>
                                                 <span class="classroom">ауд. {{ entry.classroom.name }}</span>
+                                                 <form method="post" action="{% url 'delete_lesson' entry.lesson.id %}" style="display:inline;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="delete-button" onclick="return confirm('Ви впевнені, що хочете видалити цю пару?');" title="Видалити пару">🗑️</button>
+                                                </form>
+
                                             </div>
                                         {% endwith %}
                                     {% endif %}
