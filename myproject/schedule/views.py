@@ -103,6 +103,7 @@ def schedule_view(request):
     semesters = Semester.objects.all()
     teacher_id = request.GET.get('teacher_id')
     semester_id = request.GET.get('semester_id')
+    course = request.GET.get('course')
 
     schedule_entries = ScheduleEntry.objects.all()
 
@@ -119,6 +120,9 @@ def schedule_view(request):
     if semester_id:
         schedule_entries = schedule_entries.filter(
             lesson__semester_id=semester_id)
+
+    if course:
+        schedule_entries = schedule_entries.filter(lesson__course=course)
 
 
     schedule_entries = sorted(
@@ -173,6 +177,7 @@ def schedule_view(request):
         'selected_semester_id': semester_id,
         'semesters': semesters,
         'schedule_availability': schedule_availability,
+        'selected_course': course,
     }
     return render(request, 'schedule.html', context)
 
