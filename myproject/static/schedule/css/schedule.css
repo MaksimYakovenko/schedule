@@ -21,7 +21,7 @@ td {
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
 }
 
 .schedule-entry:nth-child(odd) {
@@ -37,18 +37,16 @@ td {
     color: #333;
 }
 
-.schedule-entry .subject {
-    font-style: italic;
-    color: #555;
-}
+
 
 .schedule-entry .teacher {
-    color: #777;
+    color: #233874;
 }
 
 .schedule-entry .classroom {
     font-weight: bold;
     color: #444;
+    font-size: 16px;
 }
 
 .schedule-entry .degree {
@@ -102,5 +100,81 @@ h1 {
 .day-cell {
     text-align: center;
     vertical-align: middle;
-    transform: rotate(-0.25turn);
 }
+
+.subject {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 17px;
+}
+
+.subject.ЛЕКЦІЯ {
+    color: #1e88e5;
+}
+
+.subject.СЕМІНАР {
+    color: #388e3c;
+}
+
+.subject.ПРАКТИЧНА {
+    color: #f57c00;
+}
+
+
+.delete-button {
+            background-color: transparent;
+            border: none;
+            color: #e53935;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 6px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            transform: scale(0.9)
+        }
+
+        .delete-button:hover {
+            background-color: #ffe5e5;
+            transform: scale(1.1);
+        }
+
+        .delete-button:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.4);
+        }
+
+
+        select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 10px 6px;
+  }
+
+  select:focus {
+    border-color: #3f51b5;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+  }
+
+  label {
+    font-weight: 500;
+    margin-right: 8px;
+  }
+
+  form select {
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }

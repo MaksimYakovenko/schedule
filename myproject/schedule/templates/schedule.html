@@ -7,29 +7,7 @@
     <title>Розклад</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'schedule/css/schedule.css' %}" type="text/css" media="all" />
-    <style>
-        .delete-button {
-            background-color: transparent;
-            border: none;
-            color: #e53935;
-            cursor: pointer;
-            font-size: 20px;
-            padding: 6px;
-            border-radius: 6px;
-            transition: background-color 0.2s ease, transform 0.2s ease;
-            transform: scale(0.9)
-        }
-
-        .delete-button:hover {
-            background-color: #ffe5e5;
-            transform: scale(1.1);
-        }
-
-        .delete-button:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.4);
-        }
-    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <h1>Розклад</h1>
@@ -54,6 +32,16 @@
         <option value="4" {% if selected_course == 4 %}selected{% endif %}>4 курс</option>
         <option value="m1" {% if selected_course == m1 %}selected{% endif %}>1 курс маг.</option>
         <option value="m2" {% if selected_course == m2 %}selected{% endif %}>2 курс маг.</option>
+    </select>
+
+    <label for="group">Група:</label>
+    <select name="group" id="group">
+        <option value="">Усі групи</option>
+        {% for semester in semesters %}
+            <option value="{{ semester.id }}" {% if semester.id == selected_semester_id %}selected{% endif %}>
+                {{ semester.year }} / {{ semester.number }} семестр
+            </option>
+        {% endfor %}
     </select>
 
     <label for="semester">Семестр:</label>
@@ -107,7 +95,7 @@
         <tbody>
             {% for day in days_of_week %}
                 <tr>
-                    <td style="text-align: center; vertical-align: middle; transform: rotate(-0.25turn); white-space: nowrap;">
+                    <td style="text-align: center; vertical-align: middle; white-space: nowrap;">
                         {{ day }}
                     </td>
                     {% for group in course_groups %}
@@ -116,25 +104,53 @@
                                 {% for entry in schedule_entries %}
                                     {% if entry.group == group and entry.day_of_week == day %}
                                         {% with lesson_count=lesson_count|add:1 %}
-                                            <div class="schedule-entry">
-                                                <strong class="lesson-number">{{ entry.lesson_number }} пара</strong>
-                                                <span class="subject">{{ entry.lesson.subject.name }}</span>
-                                                <span class="subject">{{ entry.lesson.lesson_type }}</span>
-                                                <span class="teacher">{{ entry.lesson.teacher.position }} {{ entry.lesson.teacher.full_name }}</span>
-                                                <span class="degree">{{ entry.lesson.teacher.degree }}</span>
-                                                <span class="classroom">ауд. {{ entry.classroom.name }}</span>
-                                                 <form method="post" action="{% url 'delete_lesson' entry.lesson.id %}" style="display:inline;">
+                                            <div class="schedule-entry" style="display: flex; justify-content: space-between; align-items: center;">
+                                            <div style="flex-grow: 1;">
+                                                <strong class="lesson-number">{{ entry.lesson_number }} пара
+                                                {% if entry.lesson_number == 1 %}
+                                                    <span style="color: #333; font-style: italic">08:40-10:15</span>
+                                                {% elif entry.lesson_number == 2 %}
+                                                    <span style="color: #333; font-style: italic">10:35-12:10</span>
+                                                {% elif entry.lesson_number == 3 %}
+                                                    <span style="color: #333; font-style: italic">12:20-13:55</span>
+                                                {% elif entry.lesson_number == 4 %}
+                                                    <span style="color: #333; font-style: italic">14:05-15:35</span>
+                                                {% endif %}
+                                                </strong>
+
+                                                <span class="subject {{ entry.lesson.lesson_type|upper }}">
+                                                    {{ entry.lesson.lesson_type }}
+                                                </span>
+                                                <span class="subject" style="font-weight: bold; color: #233874; font-size: 18px ;">{{ entry.lesson.subject.name }}</span>
+                                                <span class="teacher" style="display: block; margin-top: 5px;">
+                                                    <i class="fas fa-graduation-cap" style="vertical-align: middle; margin-right: -1px; color: #233874;"></i>
+                                                    {{ entry.lesson.teacher.position|slice:":4"|lower }}. {{ entry.lesson.teacher.full_name }}
+                                                </span>
+                                                <span class="classroom" style="display: block; margin-top: 5px;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#233874" style="vertical-align: middle; margin-right: -2px;">
+                                                        <path d="M0 0h24v24H0z" fill="none"/>
+                                                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/>
+                                                    </svg>
+                                                    {{ entry.classroom.name }}
+                                                </span>
+                                            </div>
+                                            <div style="display: flex;">
+                                                <form method="post" action="{% url 'delete_lesson' entry.lesson.id %}" style="display:inline;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="delete-button" onclick="return confirm('Ви впевнені, що хочете видалити цю пару?');" title="Видалити пару">✏️</button>
+                                                </form>
+
+                                                <form method="post" action="{% url 'delete_lesson' entry.lesson.id %}" style="display:inline;">
                                                     {% csrf_token %}
                                                     <button type="submit" class="delete-button" onclick="return confirm('Ви впевнені, що хочете видалити цю пару?');" title="Видалити пару">🗑️</button>
                                                 </form>
-
                                             </div>
+                                        </div>
+
+
                                         {% endwith %}
                                     {% endif %}
                                 {% endfor %}
-                                {% if lesson_count < 1 %}
-                                    <div class="no-lessons">Немає занять</div>
-                                {% endif %}
                             {% endwith %}
                         </td>
                     {% endfor %}
