@@ -134,6 +134,18 @@ class Lesson(models.Model):
         verbose_name="Тип заняття"
     )
 
+    start_date = models.DateField(
+        verbose_name="Дата початку",
+        null=True,
+        blank=True
+    )
+
+    end_date = models.DateField(
+        verbose_name="Дата завершення",
+        null=True,
+        blank=True
+    )
+
     class Meta:
         verbose_name = "Заняття"
         verbose_name_plural = "Заняття"

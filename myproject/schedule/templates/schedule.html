@@ -57,11 +57,22 @@
     <button type="submit">Фільтрувати</button>
 </form>
 
-<form method="post" action="{% url 'generate_schedule' %}">
-    {% csrf_token %}
-    <input type="hidden" name="semester_id" id="hiddenSemesterId" value="{{ selected_semester_id }}">
-    <button type="submit" id="generateButton" disabled>Згенерувати розклад</button>
-</form>
+
+<div style="display: flex; gap: 10px; margin-top: 20px;">
+    <form method="post" action="{% url 'generate_schedule' %}">
+        {% csrf_token %}
+        <input type="hidden" name="semester_id" id="hiddenSemesterId" value="{{ selected_semester_id }}">
+        <button type="submit" id="generateButton" disabled>Згенерувати розклад</button>
+    </form>
+
+    <form method="get" action="{% url 'home' %}">
+        <button type="submit">На головну</button>
+    </form>
+
+    <form method="get" action="{% url 'add_lesson' %}">
+        <button type="submit">Додати пару</button>
+    </form>
+</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -108,20 +119,32 @@
                                             <div style="flex-grow: 1;">
                                                 <strong class="lesson-number">{{ entry.lesson_number }} пара
                                                 {% if entry.lesson_number == 1 %}
-                                                    <span style="color: #333; font-style: italic">08:40-10:15</span>
+                                                    <span style="color: #233874;">
+                                                        <i class="fas fa-clock" style="vertical-align: middle; margin-right: -1px; color: #233874;"></i>
+                                                        08:40-10:15
+                                                    </span>
                                                 {% elif entry.lesson_number == 2 %}
-                                                    <span style="color: #333; font-style: italic">10:35-12:10</span>
+                                                    <span style="color: #233874;">
+                                                        <i class="fas fa-clock" style="vertical-align: middle; margin-right: -1px; color: #233874;"></i>
+                                                        10:35-12:10
+                                                    </span>
                                                 {% elif entry.lesson_number == 3 %}
-                                                    <span style="color: #333; font-style: italic">12:20-13:55</span>
+                                                    <span style="color: #233874;">
+                                                        <i class="fas fa-clock" style="vertical-align: middle; margin-right: -1px; color: #233874;"></i>
+                                                        12:20-13:55
+                                                    </span>
                                                 {% elif entry.lesson_number == 4 %}
-                                                    <span style="color: #333; font-style: italic">14:05-15:35</span>
+                                                    <span style="color: #233874;">
+                                                        <i class="fas fa-clock" style="vertical-align: middle; margin-right: -1px; color: #233874;"></i>
+                                                        14:05-15:35
+                                                    </span>
                                                 {% endif %}
                                                 </strong>
 
-                                                <span class="subject {{ entry.lesson.lesson_type|upper }}">
+                                                <span class="subject {{ entry.lesson.lesson_type|upper }}" style="margin-top: 3px;">
                                                     {{ entry.lesson.lesson_type }}
                                                 </span>
-                                                <span class="subject" style="font-weight: bold; color: #233874; font-size: 18px ;">{{ entry.lesson.subject.name }}</span>
+                                                <span class="subject" style="font-weight: bold; color: #233874; font-size: 18px; margin-top: 5px;">{{ entry.lesson.subject.name }}</span>
                                                 <span class="teacher" style="display: block; margin-top: 5px;">
                                                     <i class="fas fa-graduation-cap" style="vertical-align: middle; margin-right: -1px; color: #233874;"></i>
                                                     {{ entry.lesson.teacher.position|slice:":4"|lower }}. {{ entry.lesson.teacher.full_name }}
@@ -133,6 +156,17 @@
                                                     </svg>
                                                     {{ entry.classroom.name }}
                                                 </span>
+                                                {% if entry.lesson.start_date and entry.lesson.end_date %}
+                                                    <span style="
+                                                        display: block;
+                                                        margin-top: 5px;
+                                                        color: red;
+                                                        font-size: 14px;
+                                                        font-style: italic;
+                                                    ">
+                                                        з {{ entry.lesson.start_date }} до {{ entry.lesson.end_date }}
+                                                    </span>
+                                                {% endif %}
                                             </div>
                                             <div style="display: flex;">
                                                 <form method="post" action="{% url 'delete_lesson' entry.lesson.id %}" style="display:inline;">

@@ -11,7 +11,7 @@
 <body>
 {% include 'appbar.html' %}
 <br/>
-    <h1>Список зайнять</h1>
+    <h1>Список занять</h1>
 
     <table>
         <thead>
@@ -22,6 +22,8 @@
                 <th>Тип</th>
                 <th>К-сть пар</th>
                 <th>Семестр</th>
+                <th>Початок</th>
+                <th>Кінець</th>
                 <th>Викладач</th>
                 <th>Дії</th>
             </tr>
@@ -35,15 +37,20 @@
                     <td>{{ lesson.lesson_type }}</td>
                     <td> {{ lesson.hours_per_week }} </td>
                     <td>{{ lesson.semester }}</td>
+                    <td> {{ lesson.start_date }} </td>
+                    <td> {{ lesson.end_date }} </td>
                     <td>{{ lesson.teacher }}</td>
                     <td>
-                        <a href="{% url 'lesson_edit' lesson.pk %}" class="icon-btn edit-btn" title="Редагувати">
-    <i class="fas fa-edit"></i>
-</a>
-
-<a href="{% url 'lesson_delete' lesson.pk %}" class="icon-btn delete-btn" title="Видалити">
-    <i class="fas fa-trash-alt"></i>
-</a>
+                        <div style="flex-direction: column;">
+                            <a href="{% url 'lesson_edit' lesson.pk %}" class="icon-btn edit-btn" title="Редагувати">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <div style="margin-top: 20px; margin-left: 5px;">
+                                <a href="{% url 'lesson_delete' lesson.pk %}" class="icon-btn delete-btn" title="Видалити">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             {% empty %}

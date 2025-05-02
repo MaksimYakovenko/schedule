@@ -8,6 +8,7 @@ from schedule.models import (Department, Teacher, Classroom, Lesson, Group,
 from django.shortcuts import redirect
 from collections import defaultdict
 from django.views.decorators.http import require_POST
+from .forms import LessonForm
 
 
 def home(request):
@@ -188,6 +189,25 @@ def delete_lesson(request, lesson_id):
     lesson = get_object_or_404(Lesson, id=lesson_id)
     lesson.delete()
     return redirect('schedule_view')
+
+
+def add_lesson_view(request):
+    if request.method == 'POST':
+        form = LessonForm(request.POST)
+        if form.is_valid():
+            lesson = form.save()
+            ScheduleEntry.objects.create(
+                lesson=lesson,
+                group=form.cleaned_data['group'],
+                classroom=form.cleaned_data['classroom'],
+                semester=form.cleaned_data['semester'],
+                day_of_week=form.cleaned_data['day_of_week'],
+                lesson_number=form.cleaned_data['lesson_number'],
+            )
+            return redirect('schedule_view')  # повернення на розклад
+    else:
+        form = LessonForm()
+    return render(request, 'schedule/add_lesson.html', {'form': form})
 
 
 class AddDepartment(CreateView):
