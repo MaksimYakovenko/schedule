@@ -63,4 +63,7 @@ urlpatterns = [
     path('generate/', generate_schedule, name='generate_schedule'),
     path('schedule/', schedule_view, name='schedule_view'),
     path('schedule/<int:lesson_id>/delete/', views.delete_lesson, name='delete_lesson'),
+    path('export_excel', views.export_schedule_excel,
+         name='export_schedule_excel'),
+    path('lessons/<int:lesson_id>/edit/', views.edit_lesson, name='edit_lesson'),
 ]

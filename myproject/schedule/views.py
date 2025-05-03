@@ -9,6 +9,10 @@ from django.shortcuts import redirect
 from collections import defaultdict
 from django.views.decorators.http import require_POST
 from .forms import LessonForm
+import openpyxl
+from django.http import HttpResponse
+from openpyxl.utils import get_column_letter
+
 
 
 def home(request):
@@ -106,6 +110,7 @@ def schedule_view(request):
     teacher_id = request.GET.get('teacher_id')
     semester_id = request.GET.get('semester_id')
     course = request.GET.get('course')
+    group_id = request.GET.get('group_id')
 
     schedule_entries = ScheduleEntry.objects.all()
 
@@ -115,6 +120,9 @@ def schedule_view(request):
     if teacher_id in [None, '', 'None']:
         teacher_id = None
 
+    if group_id in [None, '', 'None']:
+        group_id = None
+
     if teacher_id:
         schedule_entries = schedule_entries.filter(
             lesson__teacher_id=teacher_id)
@@ -122,6 +130,10 @@ def schedule_view(request):
     if semester_id:
         schedule_entries = schedule_entries.filter(
             lesson__semester_id=semester_id)
+
+    if group_id:
+        schedule_entries = schedule_entries.filter(
+            lesson__group_id=group_id)
 
     if course:
         schedule_entries = schedule_entries.filter(lesson__course=course)
@@ -177,6 +189,7 @@ def schedule_view(request):
         'teachers': teachers,
         'selected_teacher_id': teacher_id,
         'selected_semester_id': semester_id,
+        'selected_group_id': group_id,
         'semesters': semesters,
         'schedule_availability': schedule_availability,
         'selected_course': course,
@@ -189,6 +202,20 @@ def delete_lesson(request, lesson_id):
     lesson = get_object_or_404(Lesson, id=lesson_id)
     lesson.delete()
     return redirect('schedule_view')
+
+
+def edit_lesson(request, lesson_id):
+    lesson = get_object_or_404(Lesson, id=lesson_id)
+
+    if request.method == 'POST':
+        form = LessonForm(request.POST, instance=lesson)
+        if form.is_valid():
+            form.save()
+            return redirect('schedule_view')
+    else:
+        form = LessonForm(instance=lesson)
+
+    return render(request, 'schedule/edit_lesson.html', {'form': form, 'lesson': lesson})
 
 
 def add_lesson_view(request):
@@ -208,6 +235,37 @@ def add_lesson_view(request):
     else:
         form = LessonForm()
     return render(request, 'schedule/add_lesson.html', {'form': form})
+
+
+def export_schedule_excel(request):
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Розклад"
+
+    headers = ["Група", "День", "Номер пари", "Тип", "Предмет", "Викладач", "Аудиторія", "Період"]
+    for col_num, header in enumerate(headers, 1):
+        col_letter = get_column_letter(col_num)
+        ws[f"{col_letter}1"] = header
+
+    # Дані
+    entries = ScheduleEntry.objects.select_related('lesson__teacher', 'lesson__subject', 'group', 'classroom')
+    for row_num, entry in enumerate(entries, 2):
+        ws[f"A{row_num}"] = entry.group.name
+        ws[f"B{row_num}"] = entry.day_of_week
+        ws[f"C{row_num}"] = entry.lesson_number
+        ws[f"D{row_num}"] = entry.lesson.lesson_type
+        ws[f"E{row_num}"] = entry.lesson.subject.name
+        ws[f"F{row_num}"] = entry.lesson.teacher.full_name
+        ws[f"G{row_num}"] = entry.classroom.name
+        period = ""
+        if entry.lesson.start_date and entry.lesson.end_date:
+            period = f"з {entry.lesson.start_date} до {entry.lesson.end_date}"
+        ws[f"H{row_num}"] = period
+
+    response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response["Content-Disposition"] = "attachment; filename=rozklad.xlsx"
+    wb.save(response)
+    return response
 
 
 class AddDepartment(CreateView):

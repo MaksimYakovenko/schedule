@@ -19,3 +19,9 @@ class LessonForm(forms.ModelForm):
     class Meta:
         model = Lesson
         fields = ['subject', 'teacher', 'lesson_type']
+
+
+class EditLessonForm(forms.ModelForm):
+    class Meta:
+        model = Lesson
+        fields = ['subject', 'teacher', 'lesson_type', 'start_date', 'end_date']

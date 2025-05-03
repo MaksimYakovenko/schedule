@@ -1,0 +1,18 @@
+{% load static %}
+
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Додати пару</title>
+    <link rel="stylesheet" href="{% static 'schedule/css/schedule.css' %}">
+</head>
+<body>
+<h1>Редагувати пару</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Зберегти</button>
+</form>
+<a href="{% url 'schedule_view' %}">⬅ Назад до розкладу</a>
+</body>
+</html>
