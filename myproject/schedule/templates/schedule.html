@@ -180,7 +180,7 @@
                                                 {% endif %}
                                             </div>
                                             <div style="display: flex;">
-                                                <form method="post" action="{% url 'edit_lesson' entry.lesson.id %}" style="display:inline;">
+                                                <form method="post" action="{% url 'edit_lesson_entry' entry.id %}" style="display:inline;">
                                                     {% csrf_token %}
                                                     <button type="submit" class="delete-button" title="Редагувати пару">✏️</button>
                                                 </form>

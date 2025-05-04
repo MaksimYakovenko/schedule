@@ -12,7 +12,7 @@ from .views import (AddDepartment, AddTeacher, About, Contacts, TeacherListView,
                     AddSubject, SubjectDeleteView, SubjectUpdateView,
                     AddSemester, SemesterListView, SemesterDeleteView,
                     SemesterUpdateView, LessonListView, generate_schedule,
-                    schedule_view, delete_lesson, add_lesson_view )
+                    schedule_view, delete_lesson, add_lesson_view, edit_lesson_view )
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -67,5 +67,6 @@ urlpatterns = [
          name='add_lesson_entry'),
     path('export_excel', views.export_schedule_excel,
          name='export_schedule_excel'),
-    path('lessons/<int:lesson_id>/edit/', views.edit_lesson, name='edit_lesson'),
+    path('schedule/<int:entry_id>/edit', views.edit_lesson_view,
+         name='edit_lesson_entry'),
 ]
