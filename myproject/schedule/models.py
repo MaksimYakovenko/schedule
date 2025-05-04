@@ -103,7 +103,7 @@ class Lesson(models.Model):
         (LECTURE, 'Лекція'),
         (SEMINAR, 'Семінар'),
         (LABORATORY, 'Лабораторна'),
-        (CONSULTATION, 'Консультація'),
+        (CONSULTATION   , 'Консультація'),
     ]
 
 
@@ -117,10 +117,18 @@ class Lesson(models.Model):
     ]
 
     teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT)
-    group = models.ForeignKey(Group, on_delete=models.PROTECT)
-    course = models.CharField(max_length=2, choices=COURSE_CHOICES)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    course = models.CharField(max_length=2, choices=COURSE_CHOICES,
+                              null=False, blank=False)
     subject = models.ForeignKey(Subject, on_delete=models.PROTECT)
     semester = models.ForeignKey(Semester, on_delete=models.PROTECT)
+    classroom = models.ForeignKey(
+        Classroom,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        verbose_name='Аудиторія'
+    )
     hours_per_week = models.PositiveIntegerField(
         default=1,
         validators=[MinValueValidator(1), MaxValueValidator(10)],
@@ -152,7 +160,8 @@ class Lesson(models.Model):
         db_table = 'lesson'
 
     def __str__(self):
-        return f"{self.subject} ({self.group}) - {self.lesson_type}"
+        return f"{self.subject} ({self.group}) -\
+                {self.lesson_type}"
 
 
 

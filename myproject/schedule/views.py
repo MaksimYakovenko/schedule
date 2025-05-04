@@ -8,10 +8,13 @@ from schedule.models import (Department, Teacher, Classroom, Lesson, Group,
 from django.shortcuts import redirect
 from collections import defaultdict
 from django.views.decorators.http import require_POST
-from .forms import LessonForm
+from .forms import ScheduleEntryForm, EditScheduleEntryForm
 import openpyxl
 from django.http import HttpResponse
 from openpyxl.utils import get_column_letter
+from django.utils.html import strip_tags
+from openpyxl.styles import Font
+from openpyxl import Workbook
 
 
 
@@ -220,50 +223,123 @@ def edit_lesson(request, lesson_id):
 
 def add_lesson_view(request):
     if request.method == 'POST':
-        form = LessonForm(request.POST)
+        form = ScheduleEntryForm(request.POST)
         if form.is_valid():
-            lesson = form.save()
-            ScheduleEntry.objects.create(
-                lesson=lesson,
-                group=form.cleaned_data['group'],
-                classroom=form.cleaned_data['classroom'],
-                semester=form.cleaned_data['semester'],
-                day_of_week=form.cleaned_data['day_of_week'],
-                lesson_number=form.cleaned_data['lesson_number'],
-            )
-            return redirect('schedule_view')  # повернення на розклад
+            course = form.cleaned_data.get('course')
+            start_date = form.cleaned_data.get('start_date')
+            end_date = form.cleaned_data.get('end_date')
+
+            teacher = form.cleaned_data['teacher']
+            classroom = form.cleaned_data['classroom']
+            day_of_week = form.cleaned_data['day_of_week']
+            lesson_number = form.cleaned_data['lesson_number']
+            group = form.cleaned_data['group']
+            semester = form.cleaned_data['semester']
+
+            teacher_conflict = ScheduleEntry.objects.filter(
+                lesson__teacher=teacher,
+                day_of_week=day_of_week,
+                lesson_number=lesson_number,
+                lesson__semester=semester,
+            ).exists()
+
+            if teacher_conflict:
+                form.add_error('teacher',
+                               'Викладач зайнятий у цей день і пару.')
+
+            classroom_conflict = ScheduleEntry.objects.filter(
+                classroom=classroom,
+                day_of_week=day_of_week,
+                lesson_number=lesson_number,
+                lesson__semester=semester,
+            ).exists()
+
+            if classroom_conflict:
+                form.add_error('classroom',
+                               'Аудиторія зайнята у цей день і пару.')
+
+            group_conflict = ScheduleEntry.objects.filter(
+                group=group,
+                day_of_week=day_of_week,
+                lesson_number=lesson_number,
+                lesson__semester=semester,
+            ).exists()
+
+            if group_conflict:
+                form.add_error('group', 'У групи вже є пара в цей день і пару.')
+
+            if not form.errors and course not in [None, '']:
+                lesson, _ = Lesson.objects.get_or_create(
+                    subject=form.cleaned_data['subject'],
+                    teacher=teacher,
+                    course=course,
+                    start_date=start_date,
+                    end_date=end_date,
+                    lesson_type=form.cleaned_data['lesson_type'],
+                    group=group,
+                    semester=semester,
+                    classroom=classroom,
+                )
+                ScheduleEntry.objects.get_or_create(
+                    lesson=lesson,
+                    group=group,
+                    classroom=classroom,
+                    day_of_week=day_of_week,
+                    lesson_number=lesson_number,
+                )
+                return redirect('schedule_view')
+
+            elif course in [None, '']:
+                form.add_error('course', 'Поле "Курс" є обов’язковим.')
+
     else:
-        form = LessonForm()
-    return render(request, 'schedule/add_lesson.html', {'form': form})
+        form = ScheduleEntryForm()
+
+    return render(request, 'schedule/add_lesson_entry.html', {'form': form})
+
 
 
 def export_schedule_excel(request):
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Розклад"
+    wb = Workbook()
+    bold_font = Font(bold=True)
 
-    headers = ["Група", "День", "Номер пари", "Тип", "Предмет", "Викладач", "Аудиторія", "Період"]
-    for col_num, header in enumerate(headers, 1):
-        col_letter = get_column_letter(col_num)
-        ws[f"{col_letter}1"] = header
+    default_sheet = wb.active
+    wb.remove(default_sheet)
 
-    # Дані
-    entries = ScheduleEntry.objects.select_related('lesson__teacher', 'lesson__subject', 'group', 'classroom')
-    for row_num, entry in enumerate(entries, 2):
-        ws[f"A{row_num}"] = entry.group.name
-        ws[f"B{row_num}"] = entry.day_of_week
-        ws[f"C{row_num}"] = entry.lesson_number
-        ws[f"D{row_num}"] = entry.lesson.lesson_type
-        ws[f"E{row_num}"] = entry.lesson.subject.name
-        ws[f"F{row_num}"] = entry.lesson.teacher.full_name
-        ws[f"G{row_num}"] = entry.classroom.name
-        period = ""
-        if entry.lesson.start_date and entry.lesson.end_date:
-            period = f"з {entry.lesson.start_date} до {entry.lesson.end_date}"
-        ws[f"H{row_num}"] = period
+    entries = ScheduleEntry.objects.select_related(
+        'lesson__teacher', 'lesson__subject', 'group', 'classroom'
+    ).order_by('lesson__course', 'group__name', 'day_of_week', 'lesson_number')
+
+    schedule_by_course = defaultdict(list)
+    for entry in entries:
+        course = entry.lesson.course
+        schedule_by_course[course].append(entry)
+
+    for course, course_entries in schedule_by_course.items():
+        sheet_name = f"{course} курс"
+        ws = wb.create_sheet(title=sheet_name[:31])
+
+        headers = ["Група", "День", "Номер пари", "Тип", "Предмет", "Викладач", "Аудиторія", "Період"]
+        for col_num, header in enumerate(headers, 1):
+            ws.cell(row=1, column=col_num, value=header).font = bold_font
+
+        for row_num, entry in enumerate(course_entries, start=2):
+            ws.cell(row=row_num, column=1, value=entry.group.name)
+            ws.cell(row=row_num, column=2, value=entry.day_of_week)
+            ws.cell(row=row_num, column=3, value=entry.lesson_number)
+            ws.cell(row=row_num, column=4, value=entry.lesson.lesson_type)
+            ws.cell(row=row_num, column=5, value=entry.lesson.subject.name)
+            ws.cell(row=row_num, column=6, value=entry.lesson.teacher.full_name)
+            ws.cell(row=row_num, column=7, value=entry.classroom.name)
+
+            if entry.lesson.start_date and entry.lesson.end_date:
+                period = f"з {entry.lesson.start_date.strftime('%d.%m.%Y')} до {entry.lesson.end_date.strftime('%d.%m.%Y')}"
+            else:
+                period = ""
+            ws.cell(row=row_num, column=8, value=period)
 
     response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    response["Content-Disposition"] = "attachment; filename=rozklad.xlsx"
+    response["Content-Disposition"] = "attachment; filename=rozklad_po_kursam.xlsx"
     wb.save(response)
     return response
 
