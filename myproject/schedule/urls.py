@@ -1,5 +1,8 @@
 from django.urls import path
 from . import views
+from .generate_schedule import generate_schedule, schedule_view
+from .crud_lessons import add_lesson_view, delete_lesson, edit_lesson_view
+from .export_excel import export_schedule_excel
 from .views import (AddDepartment, AddTeacher, About, Contacts, TeacherListView, \
                     DepartmentListView, TeacherDeleteView, DepartmentDeleteView,
                     AddAudience, \
@@ -11,8 +14,7 @@ from .views import (AddDepartment, AddTeacher, About, Contacts, TeacherListView,
                     GroupDeleteView, GroupUpdateView, SubjectListView,
                     AddSubject, SubjectDeleteView, SubjectUpdateView,
                     AddSemester, SemesterListView, SemesterDeleteView,
-                    SemesterUpdateView, LessonListView, generate_schedule,
-                    schedule_view, delete_lesson, add_lesson_view, edit_lesson_view )
+                    SemesterUpdateView, LessonListView,)
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -62,11 +64,12 @@ urlpatterns = [
     path('lessons/', LessonListView.as_view(), name='lesson_list'),
     path('generate/', generate_schedule, name='generate_schedule'),
     path('schedule/', schedule_view, name='schedule_view'),
-    path('schedule/<int:lesson_id>/delete/', views.delete_lesson, name='delete_lesson'),
-    path('schedule/add/', views.add_lesson_view,
+    path('schedule/<int:lesson_id>/delete/', delete_lesson,
+         name='delete_lesson'),
+    path('schedule/add/', add_lesson_view,
          name='add_lesson_entry'),
-    path('export_excel', views.export_schedule_excel,
+    path('export_excel', export_schedule_excel,
          name='export_schedule_excel'),
-    path('schedule/<int:entry_id>/edit', views.edit_lesson_view,
+    path('schedule/<int:entry_id>/edit', edit_lesson_view,
          name='edit_lesson_entry'),
 ]
