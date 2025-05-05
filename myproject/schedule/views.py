@@ -152,7 +152,7 @@ class GroupUpdateView(UpdateView):
 
 class LessonUpdateView(UpdateView):
     model = Lesson
-    template_name = 'edit_lesson_entry.html'
+    template_name = 'edit_lesson.html'
     fields = '__all__'
     success_url = reverse_lazy('lesson_list')
 

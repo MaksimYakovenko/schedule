@@ -41,8 +41,6 @@ urlpatterns = [
          name='department_edit'),
     path('audiences/<int:pk>/edit/', AudienceUpdateView.as_view(),
          name='audience_edit'),
-    path('lessons/<int:pk>/edit/', LessonUpdateView.as_view(),
-         name='lesson_edit'),
     path('add_group/', AddGroup.as_view(), name='add_group'),
     path('groups/', GroupListView.as_view(), name='group_list'),
     path('groups/<int:pk>/delete/', GroupDeleteView.as_view(),

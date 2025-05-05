@@ -3,10 +3,10 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Semester(models.Model):
-    year = models.CharField(max_length=20)
-    number = models.CharField(max_length=10)
-    start_date = models.DateField()
-    end_date = models.DateField()
+    year = models.CharField(max_length=20, verbose_name='Навчальний рік')
+    number = models.CharField(max_length=10, verbose_name='Номер семестру')
+    start_date = models.DateField(verbose_name='Дата початку')
+    end_date = models.DateField(verbose_name='Дата закінчення')
 
     class Meta:
         verbose_name = "Семестр"
@@ -19,8 +19,8 @@ class Semester(models.Model):
 
 
 class Department(models.Model):
-    name = models.CharField(max_length=100)
-    faculty = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, verbose_name='Назва кафедри')
+    faculty = models.CharField(max_length=100, verbose_name='Факультет')
     is_active = models.BooleanField(default=True)
 
     class Meta:
@@ -34,10 +34,13 @@ class Department(models.Model):
 
 
 class Teacher(models.Model):
-    full_name = models.CharField(max_length=200)
-    position = models.CharField(max_length=100)
-    degree = models.CharField(max_length=100, blank=True, null=True)
-    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
+    full_name = models.CharField(max_length=200, verbose_name='ПІБ')
+    position = models.CharField(max_length=100, verbose_name='Посада')
+    degree = models.CharField(max_length=100, blank=True, null=True,
+                              verbose_name='Науковий ступінь')
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL,
+                                   null=True, blank=True,
+                                   verbose_name='Належність до кафедри')
     is_active = models.BooleanField(default=True)
 
     class Meta:
@@ -51,8 +54,8 @@ class Teacher(models.Model):
 
 
 class Classroom(models.Model):
-    name = models.CharField(max_length=50)
-    capacity = models.PositiveIntegerField()
+    name = models.CharField(max_length=50, verbose_name='Номер')
+    capacity = models.PositiveIntegerField(verbose_name='Місткість')
     is_active = models.BooleanField(default=True)
 
     class Meta:
@@ -66,7 +69,7 @@ class Classroom(models.Model):
 
 
 class Group(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, verbose_name='Назва групи')
 
     class Meta:
         verbose_name = "Група"
@@ -79,7 +82,7 @@ class Group(models.Model):
 
 
 class Subject(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, verbose_name='Назва предмету')
 
     class Meta:
         verbose_name = "Предмет"
@@ -103,7 +106,7 @@ class Lesson(models.Model):
         (LECTURE, 'Лекція'),
         (SEMINAR, 'Семінар'),
         (LABORATORY, 'Лабораторна'),
-        (CONSULTATION   , 'Консультація'),
+        (CONSULTATION, 'Консультація'),
     ]
 
 
@@ -116,12 +119,16 @@ class Lesson(models.Model):
         ('m2', '2 курс маг.'),
     ]
 
-    teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT,
+                                verbose_name='Викладач')
+    group = models.ForeignKey(Group, on_delete=models.CASCADE,
+                              verbose_name='Група')
     course = models.CharField(max_length=2, choices=COURSE_CHOICES,
-                              null=False, blank=False)
-    subject = models.ForeignKey(Subject, on_delete=models.PROTECT)
-    semester = models.ForeignKey(Semester, on_delete=models.PROTECT)
+                              null=False, blank=False, verbose_name='Курс')
+    subject = models.ForeignKey(Subject, on_delete=models.PROTECT,
+                                verbose_name='Предмет')
+    semester = models.ForeignKey(Semester, on_delete=models.PROTECT,
+                                 verbose_name='Семестр')
     classroom = models.ForeignKey(
         Classroom,
         on_delete=models.PROTECT,

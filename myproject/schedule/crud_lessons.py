@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
 from django.views.decorators.http import require_POST
 from .forms import ScheduleEntryForm
+from .models import ScheduleEntry
 
 
 @require_POST
@@ -17,19 +18,7 @@ def edit_lesson_view(request, entry_id):
 
 
     if request.method == 'POST':
-        form = ScheduleEntryForm(request.POST, initial={
-            'subject': lesson.subject,
-            'teacher': lesson.teacher,
-            'course': lesson.course,
-            'lesson_type': lesson.lesson_type,
-            'group': lesson.group,
-            'semester': lesson.semester,
-            'classroom': lesson.classroom,
-            'start_date': lesson.start_date,
-            'end_date': lesson.end_date,
-            'day_of_week': entry.day_of_week,
-            'lesson_number': entry.lesson_number,
-        })
+        form = ScheduleEntryForm(request.POST)
 
         if form.is_valid():
             teacher = form.cleaned_data['teacher']
