@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, ValidationError
 
 
 class Semester(models.Model):
@@ -119,6 +119,12 @@ class Lesson(models.Model):
         ('m2', '2 курс маг.'),
     ]
 
+    WEEK_CHOICES = [
+        ('even', 'Парний тиждень'),
+        ('odd', 'Непарний тиждень'),
+        ('both', 'Щотижня'),
+    ]
+
     teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT,
                                 verbose_name='Викладач')
     group = models.ForeignKey(Group, on_delete=models.CASCADE,
@@ -161,6 +167,27 @@ class Lesson(models.Model):
         blank=True
     )
 
+    week_type = models.CharField(max_length=5, choices=WEEK_CHOICES,
+                                 default='both')
+
+    def clean(self):
+        super().clean()
+
+        if self.start_date and self.end_date and self.semester:
+            if self.start_date < self.semester.start_date:
+                raise ValidationError({
+                    'start_date': (
+                        'Дата початку заняття не може бути раніше початку семестру.')
+                })
+            if self.end_date > self.semester.end_date:
+                raise ValidationError({
+                    'end_date': (
+                        'Дата завершення заняття не може бути пізніше закінчення семестру.')
+                })
+            if self.start_date > self.end_date:
+                raise ValidationError(
+                    'Дата початку заняття не може бути пізніше дати завершення.')
+
     class Meta:
         verbose_name = "Заняття"
         verbose_name_plural = "Заняття"
@@ -173,6 +200,12 @@ class Lesson(models.Model):
 
 
 class ScheduleEntry(models.Model):
+    WEEK_TYPE_CHOICES = [
+        ('even', 'Парний'),
+        ('odd', 'Непарний'),
+        ('both', 'Щотижня'),
+    ]
+
     group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True, blank=True)
     day_of_week = models.CharField(
         max_length=10,
@@ -188,6 +221,11 @@ class ScheduleEntry(models.Model):
     lesson_number = models.PositiveIntegerField(null=True)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True, blank=True)
     classroom = models.ForeignKey(Classroom, on_delete=models.PROTECT, null=True, blank=True)
+    week_type = models.CharField(
+        max_length=10,
+        choices=WEEK_TYPE_CHOICES,
+        default='both'
+    )
 
     class Meta:
         verbose_name = "Розклад"

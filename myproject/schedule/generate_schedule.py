@@ -6,6 +6,7 @@ from schedule.models import (Department, Teacher, Classroom, Lesson, Group,
                              Subject, Semester, ScheduleEntry)
 from django.shortcuts import redirect
 from collections import defaultdict
+from django.db import models
 
 
 
@@ -89,10 +90,13 @@ def schedule_view(request):
     groups = Group.objects.all()
     teachers = Teacher.objects.all()
     semesters = Semester.objects.all()
+    departments = Department.objects.all()
     teacher_id = request.GET.get('teacher_id')
     semester_id = request.GET.get('semester_id')
+    department_id = request.GET.get('department_id')
     course = request.GET.get('course')
     group_id = request.GET.get('group_id')
+    week_type = request.GET.get('week_type', 'both')
 
     schedule_entries = ScheduleEntry.objects.all()
 
@@ -109,6 +113,10 @@ def schedule_view(request):
         schedule_entries = schedule_entries.filter(
             lesson__teacher_id=teacher_id)
 
+    if department_id:
+        schedule_entries = schedule_entries.filter(
+            lesson__teacher__department_id=department_id)
+
     if semester_id:
         schedule_entries = schedule_entries.filter(
             lesson__semester_id=semester_id)
@@ -120,6 +128,10 @@ def schedule_view(request):
     if course:
         schedule_entries = schedule_entries.filter(lesson__course=course)
 
+    if week_type in ['even', 'odd']:
+        schedule_entries = schedule_entries.filter(
+            models.Q(week_type=week_type) | models.Q(week_type='both')
+        )
 
     schedule_entries = sorted(
         schedule_entries,
@@ -166,14 +178,17 @@ def schedule_view(request):
         'days_of_week': DAYS_OF_WEEK,
         'lesson_numbers': LESSON_NUMBERS,
         'groups': groups,
+        'departments': departments,
         'schedule_entries': schedule_entries,
         'lesson_times': LESSON_TIMES,
         'teachers': teachers,
         'selected_teacher_id': teacher_id,
         'selected_semester_id': semester_id,
         'selected_group_id': group_id,
+        'selected_department_id': department_id,
         'semesters': semesters,
         'schedule_availability': schedule_availability,
         'selected_course': course,
+        'selected_week_type': week_type,
     }
     return render(request, 'schedule.html', context)

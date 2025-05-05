@@ -13,49 +13,67 @@
     <h1>Розклад</h1>
 
     <form method="get" action="{% url 'schedule_view' %}">
-    <label for="teacher">Виберіть викладача:</label>
-    <select name="teacher_id" id="teacher">
-        <option value="">Всі викладачі</option>
-        {% for teacher in teachers %}
-            <option value="{{ teacher.id }}" {% if teacher.id == selected_teacher_id %}selected{% endif %}>
-                {{ teacher.full_name }}
-            </option>
-        {% endfor %}
-    </select>
+        <label for="teacher">Викладач:</label>
+        <select name="teacher_id" id="teacher">
+            <option value="">Всі викладачі</option>
+            {% for teacher in teachers %}
+                <option value="{{ teacher.id }}" {% if teacher.id == selected_teacher_id %}selected{% endif %}>
+                    {{ teacher.full_name }}
+                </option>
+            {% endfor %}
+        </select>
 
-    <label for="course">Курс:</label>
-    <select name="course" id="course" onchange="this.form.submit()">
-        <option value="">Всі курси</option>
-        <option value="1" {% if selected_course == 1 %}selected{% endif %}>1 курс</option>
-        <option value="2" {% if selected_course == 2 %}selected{% endif %}>2 курс</option>
-        <option value="3" {% if selected_course == 3 %}selected{% endif %}>3 курс</option>
-        <option value="4" {% if selected_course == 4 %}selected{% endif %}>4 курс</option>
-        <option value="m1" {% if selected_course == m1 %}selected{% endif %}>1 курс маг.</option>
-        <option value="m2" {% if selected_course == m2 %}selected{% endif %}>2 курс маг.</option>
-    </select>
+        <label for="department">Кафедра:</label>
+        <select name="department_id" id="department">
+            <option value="">Всі кафедри</option>
+            {% for department in departments %}
+                <option value="{{ department.id }}" {% if department.id == selected_department_id %}selected{% endif %}>
+                    {{ department.name }}
+                </option>
+            {% endfor %}
+        </select>
 
-    <label for="group">Група:</label>
-    <select name="group_id" id="group">
-        <option value="">Усі групи</option>
-        {% for group in groups %}
-            <option value="{{ group.id }}" {% if group.id == selected_group_id %}selected{% endif %}>
-                {{ group.name }}
-            </option>
-        {% endfor %}
-    </select>
+        <label for="course">Курс:</label>
+        <select name="course" id="course" onchange="this.form.submit()">
+            <option value="">Всі курси</option>
+            <option value="1" {% if selected_course == 1 %}selected{% endif %}>1 курс</option>
+            <option value="2" {% if selected_course == 2 %}selected{% endif %}>2 курс</option>
+            <option value="3" {% if selected_course == 3 %}selected{% endif %}>3 курс</option>
+            <option value="4" {% if selected_course == 4 %}selected{% endif %}>4 курс</option>
+            <option value="m1" {% if selected_course == m1 %}selected{% endif %}>1 курс маг.</option>
+            <option value="m2" {% if selected_course == m2 %}selected{% endif %}>2 курс маг.</option>
+        </select>
 
-    <label for="semester">Семестр:</label>
-    <select name="semester_id" id="semester">
-        <option value="">Усі семестри</option>
-        {% for semester in semesters %}
-            <option value="{{ semester.id }}" {% if semester.id == selected_semester_id %}selected{% endif %}>
-                {{ semester.year }} / {{ semester.number }} семестр
-            </option>
-        {% endfor %}
-    </select>
+        <label for="group">Група:</label>
+        <select name="group_id" id="group">
+            <option value="">Усі групи</option>
+            {% for group in groups %}
+                <option value="{{ group.id }}" {% if group.id == selected_group_id %}selected{% endif %}>
+                    {{ group.name }}
+                </option>
+            {% endfor %}
+        </select>
 
-    <button type="submit">Фільтрувати</button>
-</form>
+        <label for="semester">Семестр:</label>
+        <select name="semester_id" id="semester">
+            <option value="">Усі семестри</option>
+            {% for semester in semesters %}
+                <option value="{{ semester.id }}" {% if semester.id == selected_semester_id %}selected{% endif %}>
+                    {{ semester.year }} / {{ semester.number }} семестр
+                </option>
+            {% endfor %}
+        </select>
+
+        <label for="week_type">Тип тижня:</label>
+        <select name="week_type" id="week_type">
+            <option value="">Тип</option>
+            <option value="both" {% if selected_week_type == both %}selected{% endif %}>Щотижня</option>
+            <option value="even" {% if selected_week_type == even %}selected{% endif %}>Парний</option>
+            <option value="odd" {% if selected_week_type == odd %}selected{% endif %}>Непарний</option>
+        </select>
+
+        <button type="submit">Фільтрувати</button>
+    </form>
 
 
 <div style="display: flex; gap: 10px; margin-top: 20px;">

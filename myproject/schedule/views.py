@@ -1,11 +1,9 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
+from django.core.exceptions import ValidationError
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 from schedule.models import (Department, Teacher, Classroom, Lesson, Group,
                              Subject, Semester, ScheduleEntry)
-
-
-
 
 
 def home(request):
@@ -121,6 +119,14 @@ class AddLesson(CreateView):
     template_name = 'add_lesson.html'
     success_url = reverse_lazy('lesson_list')
     fields = '__all__'
+
+    def form_valid(self, form):
+        try:
+            form.instance.full_clean()
+        except ValidationError as e:
+            form.add_error(None, e)
+            return self.form_invalid(form)
+        return super().form_valid(form)
 
 
 class AddGroup(CreateView):

@@ -26,6 +26,7 @@
                 <th>Початок</th>
                 <th>Кінець</th>
                 <th>Викладач</th>
+                <th>Тип тижня</th>
                 <th>Дії</th>
             </tr>
         </thead>
@@ -42,6 +43,7 @@
                     <td> {{ lesson.start_date }} </td>
                     <td> {{ lesson.end_date }} </td>
                     <td>{{ lesson.teacher }}</td>
+                    <td>{{ lesson.week_type }}</td>
                     <td>
                         <div style="flex-direction: column;">
                             <a href="{% url 'lesson_edit' lesson.pk %}" class="icon-btn edit-btn" title="Редагувати">

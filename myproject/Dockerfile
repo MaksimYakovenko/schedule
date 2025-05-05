@@ -1,21 +1,32 @@
-# Базовый образ
-FROM python:3.10-slim
+# Use the official Python runtime image
+FROM python:3.13
 
-# Устанавливаем переменные окружения
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# Create the app directory
+RUN mkdir /app
 
-# Устанавливаем рабочую директорию
+# Set the working directory inside the container
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt
+# Set environment variables
+# Prevents Python from writing pyc files to disk
+ENV PYTHONDONTWRITEBYTECODE=1
+#Prevents Python from buffering stdout and stderr
+ENV PYTHONUNBUFFERED=1
 
-# Копируем код
-COPY . .
+# Upgrade pip
+RUN pip install --upgrade pip
 
-# Открываем порт (если нужно)
+# Copy the Django project  and install dependencies
+COPY requirements.txt  /app/
+
+# run this command to install all dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the Django project to the container
+COPY . /app/
+
+# Expose the Django port
 EXPOSE 8000
 
-# Команда запуска
-CMD ["gunicorn", "myproject.wsgi:application", "--bind", "0.0.0.0:8000"]
+# Run Django’s development server
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
