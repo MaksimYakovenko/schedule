@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
 from django.views.decorators.http import require_POST
 from .forms import ScheduleEntryForm
-from .models import ScheduleEntry
+from .models import ScheduleEntry, Lesson
 
 
 @require_POST

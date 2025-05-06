@@ -53,7 +53,7 @@
                 </option>
             {% endfor %}
         </select>
-
+        <br/>
         <label for="semester">Семестр:</label>
         <select name="semester_id" id="semester">
             <option value="">Усі семестри</option>
@@ -64,15 +64,7 @@
             {% endfor %}
         </select>
 
-        <label for="week_type">Тип тижня:</label>
-        <select name="week_type" id="week_type">
-            <option value="">Тип</option>
-            <option value="both" {% if selected_week_type == both %}selected{% endif %}>Щотижня</option>
-            <option value="even" {% if selected_week_type == even %}selected{% endif %}>Парний</option>
-            <option value="odd" {% if selected_week_type == odd %}selected{% endif %}>Непарний</option>
-        </select>
 
-        <button type="submit">Фільтрувати</button>
     </form>
 
 

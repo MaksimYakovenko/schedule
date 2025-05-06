@@ -6,6 +6,7 @@
     <title>Дашборд</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'schedule/css/home.css' %}" type="text/css" media="all" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="sidebar">
@@ -42,12 +43,52 @@
                 <h3>Кількість викладачів</h3>
                 <p>{{ teacher_count }}</p>
             </div>
+
             <div class="card">
                 <i class="fas fa-book" style="color: #3498db;"></i>
-                <h3>Додаткові ресурси</h3>
-                <p>8</p>
+                <h3>Кількість аудиторій</h3>
+                <p>{{ classroom_count }}</p>
             </div>
+
+        </div>
+        <div class="chart-container" style="width: 60%; margin: 40px auto;">
+            <canvas id="scheduleChart">
+                <script>
+                    const ctx = document.getElementById('scheduleChart').getContext('2d');
+
+                    const scheduleChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Кафедри', 'Заняття', 'Викладачі', 'Аудиторії'],
+                            datasets: [{
+                                label: 'Статистика',
+                                data: [{{ department_count }}, {{ lessons_count }}, {{ teacher_count }}, {{ classroom_count }}],
+                                backgroundColor: [
+                                    '#27ae60',
+                                    '#f1c40f',
+                                    '#e74c3c',
+                                    '#3498db',
+
+                                ],
+                                borderColor: '#2c3e50',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1
+                                    }
+                                }
+                            }
+                        }
+                    });
+                </script>
+            </canvas>
         </div>
     </div>
+
 </body>
 </html>

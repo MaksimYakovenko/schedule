@@ -65,6 +65,14 @@ def generate_schedule(request):
 
                 classroom = random.choice(available_classrooms)
 
+
+                if ScheduleEntry.objects.filter(
+                        group=group,
+                        day_of_week=day,
+                        lesson_number=lesson_number
+                ).exists():
+                    continue
+
                 ScheduleEntry.objects.create(
                     group=group,
                     day_of_week=day,

@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.core.exceptions import ValidationError
@@ -10,11 +11,22 @@ def home(request):
     teacher_count = Teacher.objects.count()
     department_count = Department.objects.count()
     lessons_count = ScheduleEntry.objects.count()
+    classroom_count = Classroom.objects.count()
     return render(request, 'home.html', {
         'teacher_count': teacher_count,
         'department_count': department_count,
-        'lessons_count': lessons_count
+        'lessons_count': lessons_count,
+        'classroom_count': classroom_count,
     })
+
+def get_week_number(semester, date):
+    delta = date - semester.start_date
+    return delta.days // 7 + 1
+
+
+def get_total_weeks(semester):
+    delta = semester.end_date - semester.start_date
+    return (delta.days // 7) + 1
 
 class AddDepartment(CreateView):
     model = Department
