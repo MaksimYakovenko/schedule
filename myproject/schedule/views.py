@@ -19,15 +19,6 @@ def home(request):
         'classroom_count': classroom_count,
     })
 
-def get_week_number(semester, date):
-    delta = date - semester.start_date
-    return delta.days // 7 + 1
-
-
-def get_total_weeks(semester):
-    delta = semester.end_date - semester.start_date
-    return (delta.days // 7) + 1
-
 class AddDepartment(CreateView):
     model = Department
     template_name = 'add_department.html'

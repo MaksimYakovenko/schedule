@@ -221,6 +221,8 @@ class ScheduleEntry(models.Model):
     lesson_number = models.PositiveIntegerField(null=True)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True, blank=True)
     classroom = models.ForeignKey(Classroom, on_delete=models.PROTECT, null=True, blank=True)
+    semester = models.ForeignKey(Semester, on_delete=models.PROTECT, null=True,
+                                 blank=True)
     week_type = models.CharField(
         max_length=10,
         choices=WEEK_TYPE_CHOICES,
