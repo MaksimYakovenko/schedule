@@ -15,7 +15,7 @@ from .views import (AddDepartment, AddTeacher, About, Contacts, TeacherListView,
                     GroupDeleteView, GroupUpdateView, SubjectListView,
                     AddSubject, SubjectDeleteView, SubjectUpdateView,
                     AddSemester, SemesterListView, SemesterDeleteView,
-                    SemesterUpdateView, LessonListView)
+                    SemesterUpdateView, LessonListView, SessionListView, AddSession)
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -71,5 +71,8 @@ urlpatterns = [
          name='export_schedule_excel'),
     path('schedule/<int:entry_id>/edit', edit_lesson_view,
          name='edit_lesson_entry'),
-    path('schedule/copy_schedule/', copy_lessons_view, name='copy_schedule')
+    path('schedule/copy_schedule/', copy_lessons_view, name='copy_schedule'),
+    path('generate_session/', generate_schedule, name='generate_session'),
+    path('session/', SessionListView.as_view(), name='session_list'),
+    path('add_session/', AddSession.as_view(), name='add_session'),
 ]

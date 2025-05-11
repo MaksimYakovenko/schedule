@@ -237,3 +237,58 @@ class ScheduleEntry(models.Model):
     def __str__(self):
         return f"{self.group} - {self.day_of_week} пара {self.lesson_number}"
 
+
+
+class Session(models.Model):
+    СREDIT = 'Залік'
+    EXAM = 'Екзамен'
+
+    CONTROL_TYPE_CHOICES = [
+        (СREDIT, 'Залік'),
+        (EXAM, 'Екзамен'),
+    ]
+
+
+    COURSE_CHOICES = [
+        ('1', '1 курс'),
+        ('2', '2 курс'),
+        ('3', '3 курс'),
+        ('4', '4 курс'),
+        ('m1', '1 курс маг.'),
+        ('m2', '2 курс маг.'),
+    ]
+
+    teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT,
+                                verbose_name='Викладач')
+    group = models.ForeignKey(Group, on_delete=models.CASCADE,
+                              verbose_name='Група')
+    course = models.CharField(max_length=2, choices=COURSE_CHOICES,
+                              null=False, blank=False, verbose_name='Курс')
+    subject = models.ForeignKey(Subject, on_delete=models.PROTECT,
+                                verbose_name='Предмет')
+    semester = models.ForeignKey(Semester, on_delete=models.PROTECT,
+                                 verbose_name='Семестр')
+    classroom = models.ForeignKey(
+        Classroom,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        verbose_name='Аудиторія'
+    )
+
+    control_type = models.CharField(
+        max_length=20,
+        choices=CONTROL_TYPE_CHOICES,
+        default=СREDIT,
+        verbose_name="Тип контролю"
+    )
+
+    class Meta:
+        verbose_name = "Залік/Екзамен"
+        verbose_name_plural = "Залік/Екзамен"
+        db_table = 'session'
+
+    def __str__(self):
+        return f"{self.subject} ({self.group}) -\
+                {self.control_type}"
+

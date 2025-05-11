@@ -4,7 +4,7 @@ from django.urls import reverse_lazy, reverse
 from django.core.exceptions import ValidationError
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 from schedule.models import (Department, Teacher, Classroom, Lesson, Group,
-                             Subject, Semester, ScheduleEntry)
+                             Subject, Semester, ScheduleEntry, Session)
 
 
 def home(request):
@@ -33,6 +33,13 @@ class AddSubject(CreateView):
     fields = '__all__'
 
 
+class AddSession(CreateView):
+    model = Session
+    template_name = 'add_session.html'
+    success_url = reverse_lazy('session_list')
+    fields = '__all__'
+
+
 class AddSemester(CreateView):
     model = Semester
     template_name = 'add_semester.html'
@@ -50,6 +57,12 @@ class LessonListView(ListView):
     model = Lesson
     template_name = 'lesson_list.html'
     context_object_name = 'lessons'
+
+
+class SessionListView(ListView):
+    model = Session
+    template_name = 'session_list.html'
+    context_object_name = 'sessions'
 
 
 class SemesterDeleteView(DeleteView):
