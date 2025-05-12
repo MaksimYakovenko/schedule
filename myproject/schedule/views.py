@@ -65,6 +65,19 @@ class SessionListView(ListView):
     context_object_name = 'sessions'
 
 
+class SessionDeleteView(DeleteView):
+    model = Session
+    template_name = 'session_confirm_delete.html'
+    success_url = reverse_lazy('session_list')
+    fields = '__all__'
+
+
+class SessionUpdateView(UpdateView):
+    model = Session
+    template_name = 'edit_session.html'
+    fields = '__all__'
+    success_url = reverse_lazy('session_list')
+
 class SemesterDeleteView(DeleteView):
     model = Semester
     template_name = 'semester_confirm_delete.html'

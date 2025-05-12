@@ -38,11 +38,11 @@
                     <td>{{ session.teacher }}</td>
                     <td>
                         <div style="flex-direction: column;">
-                            <a href="{% url 'lesson_edit' lesson.pk %}" class="icon-btn edit-btn" title="Редагувати">
+                            <a href="{% url 'session_edit' session.pk %}" class="icon-btn edit-btn" title="Редагувати">
                                 <i class="fas fa-edit"></i>
                             </a>
                             <div style="margin-top: 20px; margin-left: 5px;">
-                                <a href="{% url 'lesson_delete' lesson.pk %}" class="icon-btn delete-btn" title="Видалити">
+                                <a href="{% url 'session_delete' session.pk %}" class="icon-btn delete-btn" title="Видалити">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
                             </div>
