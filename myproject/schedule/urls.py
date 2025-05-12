@@ -3,6 +3,7 @@ from . import views
 from .generate_schedule import generate_schedule, schedule_view
 from .crud_lessons import add_lesson_view, delete_lesson, edit_lesson_view
 from .export_excel import export_schedule_excel
+from .generate_session import generate_session_view
 from .copy_schedule_pairs import copy_lessons_view
 from .views import (AddDepartment, AddTeacher, About, Contacts, TeacherListView, \
                     DepartmentListView, TeacherDeleteView, DepartmentDeleteView,
@@ -73,8 +74,7 @@ urlpatterns = [
     path('schedule/<int:entry_id>/edit', edit_lesson_view,
          name='edit_lesson_entry'),
     path('schedule/copy_schedule/', copy_lessons_view, name='copy_schedule'),
-    path('generate_session/', generate_schedule, name='generate_session'),
-    path('session/', schedule_view, name='session_view'),
+    path('generate-session/', generate_session_view, name='generate_session'),
     path('sessions/', SessionListView.as_view(), name='session_list'),
     path('add_session/', AddSession.as_view(), name='add_session'),
     path('sessions/<int:pk>/edit/', AddSession.as_view(), name='add_session'),

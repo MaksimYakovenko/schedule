@@ -292,3 +292,39 @@ class Session(models.Model):
         return f"{self.subject} ({self.group}) -\
                 {self.control_type}"
 
+
+class SessionEntry(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True, blank=True)
+    day_of_week = models.CharField(
+        max_length=10,
+        choices=[
+            ('Понеділок', 'Понеділок'),
+            ('Вівторок', 'Вівторок'),
+            ('Середа', 'Середа'),
+            ('Четвер', 'Четвер'),
+            ('Пʼятниця', 'Пʼятниця'),
+            ('Субота', 'Субота')
+        ],
+        default='Понеділок'
+    )
+
+    lesson_number = models.PositiveIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(8)],
+        default=1,
+        verbose_name='Номер контролю'
+    )
+
+    session = models.ForeignKey(Session, on_delete=models.CASCADE, null=True,
+                          blank=True)
+    classroom = models.ForeignKey(Classroom, on_delete=models.PROTECT, null=True, blank=True)
+    semester = models.ForeignKey(Semester, on_delete=models.PROTECT, null=True,
+                                 blank=True)
+
+    class Meta:
+        verbose_name = "Розклад"
+        verbose_name_plural = "Розклади"
+        db_table = 'session_entry'
+
+    def __str__(self):
+        return f"{self.group} - {self.day_of_week} пара {self.lesson_number}"
+

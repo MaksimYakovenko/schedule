@@ -1,15 +1,63 @@
-{% load_static %}
-<html lang="en">
+{% load static %}
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <title>Генерація сесії</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'schedule/css/schedule.css' %}" type="text/css" media="all" />
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+        }
+    </style>
 </head>
 <body>
+    <h1>Генерація розкладу сесії</h1>
+
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
     <form method="post">
-    {% csrf_token %}
-    <button type="submit">Згенерувати сесію</button>
-</form>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Згенерувати</button>
+    </form>
+
+    {% if session_entries %}
+        <h2>Результат генерації:</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Група</th>
+                    <th>Предмет</th>
+                    <th>Тип контролю</th>
+                    <th>День</th>
+                    <th>Курс</th>
+                    <th>Аудиторія</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in session_entries %}
+                    <tr>
+                        <td>{{ entry.group }}</td>
+                        <td>{{ entry.session.subject }}</td>
+                        <td>{{ entry.session.control_type }}</td>
+                        <td>{{ entry.day_of_week }}</td>
+                        <td>{{ entry.session.course }}</td>
+                        <td>{{ entry.classroom }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 </body>
 </html>

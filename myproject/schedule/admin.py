@@ -73,3 +73,12 @@ def generate_schedule_action(modeladmin, request, queryset):
 class SemesterAdmin(admin.ModelAdmin):
     actions = [generate_schedule_action]
 
+
+@admin.action(description="Згенерувати сесію")
+def generate_session_for_selected(modeladmin, request, queryset):
+    for semester in queryset:
+        generate_session_schedule(semester)
+
+class SessionAdmin(admin.ModelAdmin):
+    actions = [generate_session_for_selected]
+

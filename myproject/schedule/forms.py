@@ -39,3 +39,11 @@ class ScheduleEntryForm(forms.Form):
     semester = forms.ModelChoiceField(queryset=Semester.objects.all())
     day_of_week = forms.ChoiceField(choices=DAYS_OF_WEEK)
     lesson_number = forms.ChoiceField(choices=LESSON_NUMBERS)
+
+
+class GenerateSessionForm(forms.Form):
+    semester = forms.ModelChoiceField(
+        queryset=Semester.objects.all(),
+        label='Оберіть семестр',
+        required=True
+    )
