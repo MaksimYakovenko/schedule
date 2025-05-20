@@ -125,7 +125,7 @@ class Lesson(models.Model):
         ('both', 'Щотижня'),
     ]
 
-    teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT,
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE,
                                 verbose_name='Викладач')
     group = models.ForeignKey(Group, on_delete=models.CASCADE,
                               verbose_name='Група')
@@ -133,7 +133,7 @@ class Lesson(models.Model):
                               null=False, blank=False, verbose_name='Курс')
     subject = models.ForeignKey(Subject, on_delete=models.PROTECT,
                                 verbose_name='Предмет')
-    semester = models.ForeignKey(Semester, on_delete=models.PROTECT,
+    semester = models.ForeignKey(Semester, on_delete=models.CASCADE,
                                  verbose_name='Семестр')
     classroom = models.ForeignKey(
         Classroom,
@@ -221,7 +221,7 @@ class ScheduleEntry(models.Model):
     lesson_number = models.PositiveIntegerField(null=True)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True, blank=True)
     classroom = models.ForeignKey(Classroom, on_delete=models.PROTECT, null=True, blank=True)
-    semester = models.ForeignKey(Semester, on_delete=models.PROTECT, null=True,
+    semester = models.ForeignKey(Semester, on_delete=models.CASCADE, null=True,
                                  blank=True)
     week_type = models.CharField(
         max_length=10,
@@ -258,7 +258,7 @@ class Session(models.Model):
         ('m2', '2 курс маг.'),
     ]
 
-    teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT,
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE,
                                 verbose_name='Викладач')
     group = models.ForeignKey(Group, on_delete=models.CASCADE,
                               verbose_name='Група')
@@ -266,7 +266,7 @@ class Session(models.Model):
                               null=False, blank=False, verbose_name='Курс')
     subject = models.ForeignKey(Subject, on_delete=models.PROTECT,
                                 verbose_name='Предмет')
-    semester = models.ForeignKey(Semester, on_delete=models.PROTECT,
+    semester = models.ForeignKey(Semester, on_delete=models.CASCADE,
                                  verbose_name='Семестр')
     classroom = models.ForeignKey(
         Classroom,

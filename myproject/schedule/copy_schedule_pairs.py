@@ -25,7 +25,7 @@ def copy_lessons_view(request):
                     group=lesson.group,
                     course=lesson.course,
                     subject=lesson.subject,
-                    semester=target,  # змінений семестр
+                    semester=target,
                     classroom=lesson.classroom,
                     hours_per_week=lesson.hours_per_week,
                     lesson_type=lesson.lesson_type,
